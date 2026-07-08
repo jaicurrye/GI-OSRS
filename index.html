@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>GIM Roadmap — 2-Player Group Ironman</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=VT323&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  /* ============ OSRS-flavored dashboard tokens ============ */
+  :root{
+    --bg:#14110b; --bg2:#1b1710; --panel:#241f16; --panel2:#2b2518;
+    --frame:#6b5836; --frame-lite:#8a7343;
+    --gold:#f5c542; --gold-dim:#b8923a;
+    --parch:#e7d8b5; --parch-dark:#cdb787;
+    --text:#ece3d0; --muted:#9f9377;
+    --red:#c8402f; --yellow:#e6ab2c; --green:#5ba24a;
+    --red-dim:#5a231d; --yellow-dim:#5a4416; --green-dim:#274a22;
+    --radius:6px; --shadow:0 2px 0 rgba(0,0,0,.4), 0 8px 22px rgba(0,0,0,.35);
+    --pixel:'VT323', ui-monospace, monospace;
+    --body:'Inter', system-ui, sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    background:
+      radial-gradient(1100px 600px at 50% -8%, #241d12 0%, transparent 60%),
+      var(--bg);
+    color:var(--text); font-family:var(--body); font-size:15px; line-height:1.45;
+    min-height:100vh;
+  }
+  @media (prefers-reduced-motion: reduce){ *{animation:none!important; transition:none!important} }
+  button{font-family:inherit; cursor:pointer}
+  :focus-visible{outline:2px solid var(--gold); outline-offset:2px}
+
+  .wrap{max-width:1360px; margin:0 auto; padding:18px 16px 60px}
+
+  /* ============ Top bar ============ */
+  .topbar{display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:14px}
+  .brand{display:flex; align-items:baseline; gap:12px}
+  .brand h1{
+    font-family:var(--pixel); font-weight:400; font-size:44px; letter-spacing:1px;
+    margin:0; color:var(--gold); text-shadow:0 2px 0 #000, 0 0 18px rgba(245,197,66,.25);
+  }
+  .brand .sub{font-size:12px; color:var(--muted); letter-spacing:.14em; text-transform:uppercase}
+  .spacer{flex:1}
+  .topbtn{
+    background:linear-gradient(#3a3220,#2a2417); color:var(--text);
+    border:1px solid var(--frame); border-radius:var(--radius);
+    padding:8px 12px; font-size:13px; font-weight:600; box-shadow:inset 0 1px 0 rgba(255,255,255,.06);
+  }
+  .topbtn:hover{border-color:var(--frame-lite); color:#fff}
+  .topbtn.active{background:linear-gradient(#5a4a24,#3f3417); border-color:var(--gold-dim); color:var(--gold)}
+  .identity-chip{
+    display:flex; align-items:center; gap:8px; background:var(--panel); border:1px solid var(--frame);
+    border-radius:20px; padding:5px 6px 5px 12px; font-size:13px;
+  }
+  .identity-chip .who{font-weight:700; color:var(--gold)}
+  .identity-chip button{
+    background:var(--panel2); border:1px solid var(--frame); color:var(--muted);
+    border-radius:16px; padding:3px 9px; font-size:12px;
+  }
+
+  /* ============ Group status HUD ============ */
+  .hud{
+    background:linear-gradient(#221c12,#1a150d);
+    border:1px solid var(--frame); border-radius:var(--radius);
+    box-shadow:var(--shadow); padding:14px 16px; margin-bottom:18px;
+    display:grid; grid-template-columns:1.4fr 1fr 1fr; gap:14px;
+  }
+  .hud-block{display:flex; flex-direction:column; gap:8px; min-width:0}
+  .hud-label{font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--muted)}
+  .players{display:flex; gap:10px; flex-wrap:wrap}
+  .plate{
+    flex:1; min-width:150px; background:var(--panel); border:1px solid var(--frame);
+    border-radius:var(--radius); padding:9px 11px; display:flex; flex-direction:column; gap:3px;
+  }
+  .plate.mine{border-color:var(--gold-dim); box-shadow:0 0 0 1px rgba(245,197,66,.15) inset}
+  .plate .name{font-family:var(--pixel); font-size:24px; line-height:1; color:var(--gold)}
+  .plate .role{font-size:11.5px; color:var(--muted)}
+  .plate input{width:100%; background:#100d08; border:1px solid var(--frame); color:var(--text);
+    border-radius:4px; padding:4px 6px; font-family:var(--body); font-size:13px}
+  .plate .role-in{font-size:11px}
+
+  .agebox{display:flex; align-items:baseline; gap:8px}
+  .agebox .num{font-family:var(--pixel); font-size:42px; line-height:.8; color:var(--gold)}
+  .agebox .unit{font-size:13px; color:var(--muted)}
+  .gate{display:inline-flex; align-items:center; gap:7px; font-size:12px; padding:5px 9px;
+    border-radius:20px; border:1px solid var(--frame); background:var(--panel)}
+  .gate .dot{width:9px; height:9px; border-radius:50%}
+  .gate.locked{color:var(--muted)} .gate.locked .dot{background:var(--red)}
+  .gate.open{color:var(--green)} .gate.open .dot{background:var(--green)}
+  .datein{background:#100d08; border:1px solid var(--frame); color:var(--text);
+    border-radius:4px; padding:4px 6px; font-family:var(--body); font-size:12.5px; color-scheme:dark}
+
+  .prestige{display:flex; align-items:center; gap:10px}
+  .toggle{position:relative; width:52px; height:26px; border-radius:20px; border:1px solid var(--frame);
+    background:var(--panel); flex:none}
+  .toggle .knob{position:absolute; top:2px; left:2px; width:20px; height:20px; border-radius:50%;
+    background:#5a5140; transition:.15s}
+  .toggle.on{background:linear-gradient(#5a4a24,#3f3417); border-color:var(--gold-dim)}
+  .toggle.on .knob{left:28px; background:var(--gold)}
+  .prestige .star{font-size:20px}
+
+  /* ============ Lanes ============ */
+  .legend{display:flex; gap:16px; align-items:center; margin:0 2px 12px; flex-wrap:wrap; font-size:12px; color:var(--muted)}
+  .legend .item{display:flex; align-items:center; gap:6px}
+  .legend .swatch{width:12px; height:12px; border-radius:50%; border:1px solid rgba(0,0,0,.4)}
+
+  .lanes{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; align-items:start}
+  .lane{
+    background:linear-gradient(#221c12,#1c170f);
+    border:1px solid var(--frame); border-radius:var(--radius); box-shadow:var(--shadow);
+    display:flex; flex-direction:column; min-width:0;
+  }
+  .lane-head{
+    padding:12px 13px 10px; border-bottom:1px solid var(--frame);
+    background:linear-gradient(#2c2416,#231d12); border-radius:var(--radius) var(--radius) 0 0;
+  }
+  .lane-head .top{display:flex; align-items:center; gap:8px}
+  .lane-head h2{margin:0; font-family:var(--pixel); font-size:23px; font-weight:400; color:var(--gold); letter-spacing:.5px}
+  .lane-head .icon{font-size:17px; filter:saturate(.85)}
+  .lane-count{margin-top:6px; font-size:12px; color:var(--muted); font-family:var(--pixel); letter-spacing:.5px}
+  .lane-count b{color:var(--parch-dark); font-weight:400}
+  .bar{height:5px; border-radius:4px; background:#100d08; margin-top:7px; overflow:hidden; border:1px solid rgba(0,0,0,.4)}
+  .bar > span{display:block; height:100%; background:linear-gradient(90deg,var(--green-dim),var(--green))}
+
+  .rows{padding:7px; display:flex; flex-direction:column; gap:5px}
+  .row{
+    background:var(--panel); border:1px solid #3a3120; border-radius:5px; padding:8px 9px;
+    display:flex; flex-direction:column; gap:6px;
+  }
+  .row:hover{border-color:var(--frame)}
+  .row .line{display:flex; align-items:flex-start; gap:9px}
+  .dots{display:flex; gap:5px; flex:none; padding-top:1px}
+  .dot-btn{
+    width:20px; height:20px; border-radius:50%; border:1.5px solid rgba(0,0,0,.45);
+    background:var(--panel2); position:relative; padding:0; transition:transform .08s;
+    box-shadow:inset 0 1px 2px rgba(0,0,0,.5);
+  }
+  .dot-btn:hover{transform:scale(1.12)}
+  .dot-btn[data-state="none"]{background:radial-gradient(circle at 35% 30%, #d85b4c, var(--red)); border-color:#7a2419}
+  .dot-btn[data-state="wip"]{background:radial-gradient(circle at 35% 30%, #f3c25a, var(--yellow)); border-color:#836115}
+  .dot-btn[data-state="done"]{background:radial-gradient(circle at 35% 30%, #7fc06b, var(--green)); border-color:#2f5c26}
+  .dot-btn[data-state="done"]::after{content:"✓"; position:absolute; inset:0; display:flex; align-items:center;
+    justify-content:center; font-size:12px; color:#0d1a09; font-weight:700}
+  .dot-btn.locked{opacity:.5; cursor:not-allowed}
+  .dot-btn.locked:hover{transform:none}
+  .dot-btn .tag{position:absolute; bottom:-13px; left:50%; transform:translateX(-50%);
+    font-size:8px; color:var(--muted); font-family:var(--pixel); letter-spacing:.5px}
+  .dots.paired{padding-bottom:12px}
+  .row .title{flex:1; font-size:13.5px; font-weight:500; word-break:break-word}
+  .row .title small{display:block; color:var(--muted); font-weight:400; font-size:11.5px; margin-top:2px}
+  .note{
+    background:linear-gradient(#efe2c2,#e4d3aa); color:#3a2f18;
+    border:1px solid #c9b688; border-left:3px solid var(--gold-dim);
+    border-radius:3px; padding:5px 8px; font-size:12px; line-height:1.35;
+  }
+  .datestamp{font-size:10.5px; color:var(--muted); font-family:var(--pixel); letter-spacing:.5px; align-self:flex-end}
+
+  /* edit affordances */
+  .row .editrow{display:none; gap:6px; flex-wrap:wrap}
+  body.editing .row .editrow{display:flex}
+  body.editing .row{border-style:dashed}
+  .mini{background:var(--panel2); border:1px solid var(--frame); color:var(--muted);
+    border-radius:4px; padding:3px 8px; font-size:11.5px}
+  .mini:hover{color:#fff; border-color:var(--frame-lite)}
+  .mini.danger:hover{color:#ffb3ab; border-color:#7a2419}
+  .add{display:none; padding:7px}
+  body.editing .add{display:flex; gap:6px}
+  .add input{flex:1; background:#100d08; border:1px solid var(--frame); color:var(--text);
+    border-radius:4px; padding:6px 8px; font-size:12.5px}
+  .add button{background:linear-gradient(#5a4a24,#3f3417); border:1px solid var(--gold-dim);
+    color:var(--gold); border-radius:4px; padding:6px 11px; font-size:12.5px; font-weight:600}
+  .editnote-in{width:100%; background:#100d08; border:1px solid var(--frame); color:var(--text);
+    border-radius:4px; padding:4px 7px; font-size:12px; margin-top:2px}
+  .swap-hint{font-size:11px; color:var(--muted)}
+
+  /* ============ overlay / modal ============ */
+  .overlay{position:fixed; inset:0; background:rgba(8,6,3,.82); display:flex; align-items:center;
+    justify-content:center; padding:20px; z-index:50}
+  .modal{background:linear-gradient(#241d12,#1a150d); border:1px solid var(--frame-lite);
+    border-radius:8px; box-shadow:var(--shadow); padding:26px; max-width:440px; width:100%; text-align:center}
+  .modal h3{font-family:var(--pixel); font-size:30px; font-weight:400; color:var(--gold); margin:0 0 6px}
+  .modal p{color:var(--muted); font-size:13.5px; margin:0 0 20px}
+  .choices{display:flex; flex-direction:column; gap:10px}
+  .choice{background:linear-gradient(#3a3220,#2a2417); border:1px solid var(--frame); color:var(--text);
+    border-radius:6px; padding:14px; font-size:16px; font-weight:600}
+  .choice:hover{border-color:var(--gold-dim); color:var(--gold)}
+  .choice.view{font-weight:500; color:var(--muted); font-size:13px}
+
+  .status-banner{background:#3a2c12; border:1px solid var(--gold-dim); color:var(--parch);
+    border-radius:var(--radius); padding:9px 13px; font-size:12.5px; margin-bottom:14px; display:flex; gap:8px; align-items:center}
+  .status-banner.ok{background:#22331a; border-color:var(--green)}
+  .status-banner code{background:rgba(0,0,0,.35); padding:1px 5px; border-radius:3px; font-size:11.5px}
+
+  /* ============ responsive ============ */
+  @media (max-width:1080px){ .lanes{grid-template-columns:repeat(2,1fr)} .hud{grid-template-columns:1fr 1fr} }
+  @media (max-width:680px){
+    .lanes{grid-template-columns:1fr} .hud{grid-template-columns:1fr}
+    .brand h1{font-size:34px}
+  }
+  .credit{margin-top:26px; text-align:center; color:var(--muted); font-size:11.5px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <div class="brand">
+      <h1>GIM Roadmap</h1>
+      <div class="sub">2-Player Group Ironman</div>
+    </div>
+    <div class="spacer"></div>
+    <div class="identity-chip">
+      <span>Viewing as</span><span class="who" id="whoLabel">—</span>
+      <button id="switchBtn">switch</button>
+    </div>
+    <button class="topbtn" id="editBtn">Edit board</button>
+  </div>
+
+  <div class="status-banner" id="syncBanner">
+    <span id="syncText">Local mode — changes save only on this device. Add your Firebase config in the file to sync both players live.</span>
+  </div>
+
+  <!-- Group status HUD -->
+  <div class="hud">
+    <div class="hud-block">
+      <div class="hud-label">The Group</div>
+      <div class="players" id="players"></div>
+    </div>
+    <div class="hud-block">
+      <div class="hud-label">Group age</div>
+      <div class="agebox"><span class="num" id="ageNum">–</span><span class="unit">weeks old</span></div>
+      <div><input type="date" class="datein" id="startDate" title="Group start date" /></div>
+      <div class="gate" id="storageGate"><span class="dot"></span><span id="gateText">Storage unlocks locked</span></div>
+    </div>
+    <div class="hud-block">
+      <div class="hud-label">Prestige</div>
+      <div class="prestige">
+        <button class="toggle" id="prestigeToggle" aria-label="Toggle prestige"><span class="knob"></span></button>
+        <span class="star" id="prestigeStar">☆</span>
+        <span id="prestigeText" style="font-size:12.5px;color:var(--muted)">Off</span>
+      </div>
+      <div class="hud-label" style="margin-top:6px">Board group name</div>
+      <input class="datein" id="groupName" style="width:100%" placeholder="Our GIM" />
+    </div>
+  </div>
+
+  <div class="legend">
+    <span style="color:var(--parch-dark);font-weight:600">Quest-journal status:</span>
+    <span class="item"><span class="swatch" style="background:var(--red)"></span>Not started</span>
+    <span class="item"><span class="swatch" style="background:var(--yellow)"></span>In progress</span>
+    <span class="item"><span class="swatch" style="background:var(--green)"></span>Done</span>
+    <span class="item" style="margin-left:auto">Click a status dot to cycle it.</span>
+  </div>
+
+  <div class="lanes" id="lanes"></div>
+
+  <div class="credit">Red / yellow / green mirror the in-game quest journal. Built for a duo — one canonical board, synced live.</div>
+</div>
+
+<!-- identity picker -->
+<div class="overlay" id="identityModal" style="display:none">
+  <div class="modal">
+    <h3>Who's playing?</h3>
+    <p>Pick your account. You'll mark your own column plus the shared Group lane. This is remembered on this device.</p>
+    <div class="choices" id="identityChoices"></div>
+  </div>
+</div>
+
+<script type="module">
+/* ========================================================================
+   1. CONFIG — paste your Firebase Realtime Database config here to go live.
+      Until then the board runs in local-only mode (saves to this device).
+   ======================================================================== */
+const firebaseConfig = {
+  apiKey:            "PASTE_API_KEY",
+  authDomain:        "PASTE_PROJECT.firebaseapp.com",
+  databaseURL:       "https://PASTE_PROJECT-default-rtdb.firebaseio.com",
+  projectId:         "PASTE_PROJECT",
+  storageBucket:     "PASTE_PROJECT.appspot.com",
+  messagingSenderId: "PASTE_SENDER_ID",
+  appId:             "PASTE_APP_ID"
+};
+// Both players must use the same repo/file so this matches. Change it per group if you reuse the board.
+const BOARD_ID = "our-gim";
+
+/* ======================================================================== */
+
+const isConfigured = !firebaseConfig.apiKey.startsWith("PASTE_");
+let db = null, dbRoot = null, online = false;
+
+/* ---- tiny local-storage helpers (wrapped for sandboxed previews) ---- */
+const LS = {
+  get(k){ try{ return localStorage.getItem(k) }catch(e){ return null } },
+  set(k,v){ try{ localStorage.setItem(k,v) }catch(e){} }
+};
+
+/* ======================= SEED CONTENT (full detail) ===================== */
+// state: 'none' | 'wip' | 'done'.  who keys: individual -> A & B ; shared -> S
+const IND = () => ({A:{state:'none',date:null}, B:{state:'none',date:null}});
+const SH  = () => ({S:{state:'none',date:null}});
+let ord = 0; const O = () => (ord += 10);
+
+function m(lane, title, note, shared){
+  return { lane, title, note:note||"", shared:!!shared, order:O(),
+           status: shared ? SH() : IND() };
+}
+
+function buildSeedMilestones(){
+  ord = 0;
+  const list = [
+    // ---------------- QUESTS / UNLOCKS ----------------
+    m('quests',"Cook's Assistant","One of you needs this for the Group Storage unlock."),
+    m('quests',"The Restless Ghost"),
+    m('quests',"Waterfall Quest","Big early Attack/Strength XP with no combat."),
+    m('quests',"The Feud","Thieving XP; part of the early adamant-scimitar path."),
+    m('quests',"Tree Gnome Village","Spirit tree transport."),
+    m('quests',"The Grand Tree","Gnome gliders."),
+    m('quests',"Monkey Madness I","Dragon scimitar; Ape Atoll."),
+    m('quests',"Lost City","Dragon dagger; Zanaris / fairy-ring access."),
+    m('quests',"Fairytale I – Growing Pains"),
+    m('quests',"Fairytale II – Cure a Queen","Fairy rings unlocked."),
+    m('quests',"Dwarf Cannon","Dwarf multicannon — huge for Slayer & early bossing."),
+    m('quests',"Priest in Peril","Morytania access (Barrows, Slayer, more)."),
+    m('quests',"Nature Spirit"),
+    m('quests',"Animal Magnetism","Ava's device."),
+    m('quests',"Holy Grail","Excalibur + quest lamps."),
+    m('quests',"Dragon Slayer I","Wear rune platebody / d'hide body."),
+    m('quests',"Ghosts Ahoy","Ectophial teleport."),
+    m('quests',"The Dig Site"),
+    m('quests',"Bone Voyage","Fossil Island — birdhouses, ammonite crabs."),
+    m('quests',"Recipe for Disaster (subquests)","Toward Barrows gloves."),
+    m('quests',"Underground Pass","Iban's staff."),
+    m('quests',"Regicide","Tirannwn / elf lands."),
+    m('quests',"The Fremennik Trials","Rellekka; Lunar path start."),
+    m('quests',"Lunar Diplomacy","Lunar spellbook (NPC contact, humidify, etc.)."),
+    m('quests',"The Fremennik Isles"),
+    m('quests',"Desert Treasure I","Ancient Magicks."),
+    m('quests',"Monkey Madness II","Heavy ballista; Ape Atoll teleport."),
+    m('quests',"A Kingdom Divided"),
+    m('quests',"Sins of the Father","Morytania hard; vyres."),
+    m('quests',"Dragon Slayer II","200 QP gate; Myths' Guild, rune/adamant dragons."),
+    m('quests',"Song of the Elves","Prifddinas."),
+    m('quests',"Making Friends with My Arm"),
+    m('quests',"The Curse of Arrav"),
+    m('quests',"While Guthix Sleeps","Grandmaster."),
+    m('quests',"Dream Mentor","Needs Combat level 85."),
+    m('quests',"Desert Treasure II – The Fallen Empire","Endgame bossing foundation."),
+    m('quests',"Recipe for Disaster (finale)","Barrows gloves."),
+    m('quests',"Ardougne Diary (Medium+)","Ardougne cloak — infinite teleports, best-in-slot early."),
+    m('quests',"Varrock Diary (Hard)","Varrock armour — mining/smithing perks."),
+    m('quests',"Fremennik Diary","Fremennik sea boots — Rellekka teleport."),
+    m('quests',"Morytania Diary","Morytania legs; slayer perks."),
+    m('quests',"Desert Diary","Desert amulet."),
+    m('quests',"Western Provinces Diary","Crystal bow / ranging perks."),
+    m('quests',"Kandarin Diary","Kandarin headgear."),
+    m('quests',"Wilderness Diary","Ring of the gods, etc."),
+
+    // ---------------- GEAR PROGRESSION ----------------
+    m('gear',"Free GIM hybrid armour","Grab from the Iron Enclave at the start."),
+    m('gear',"Adamant scimitar","Waterfall + Feud path."),
+    m('gear',"Ava's device","Animal Magnetism."),
+    m('gear',"Dragon dagger","Lost City."),
+    m('gear',"Dragon scimitar","Monkey Madness I."),
+    m('gear',"Rune crossbow + broad bolts","Crazy Archaeologist / smithing."),
+    m('gear',"Black d'hide","Hard clues / drops."),
+    m('gear',"Fighter torso","Barbarian Assault."),
+    m('gear',"Fire cape","TzHaar Fight Cave."),
+    m('gear',"Barrows gloves","Recipe for Disaster."),
+    m('gear',"Dragon defender","Warriors' Guild."),
+    m('gear',"Iban's staff","Underground Pass."),
+    m('gear',"Zombie axe","Armoured zombies — strong early crush."),
+    m('gear',"Slayer helmet (i)","Black mask + diaries."),
+    m('gear',"Berserker ring","Dagannoth Rex."),
+    m('gear',"Amulet of fury","Craft + enchant."),
+    m('gear',"Abyssal whip","Abyssal demons."),
+    m('gear',"Dragon warhammer","Lizardman shamans."),
+    m('gear',"Trident of the seas","Cave kraken."),
+    m('gear',"Dragon boots","Spiritual mages (GWD)."),
+    m('gear',"Barrows sets (Dharok / Ahrim / Karil / Guthan)","Barrows."),
+    m('gear',"Void / Elite Void","Pest Control."),
+    m('gear',"Occult necklace","Smoke devils."),
+    m('gear',"Toxic blowpipe + Trident of the swamp","Zulrah."),
+    m('gear',"Bow of Faerdhinen + crystal armour","Corrupted Gauntlet."),
+    m('gear',"Zenyte jewellery (torture/anguish/suffering/tormented)","Demonic gorillas."),
+    m('gear',"Primordial boots","Cerberus."),
+    m('gear',"Dragon hunter lance + ferocious gloves","Alchemical Hydra (95 Slayer)."),
+    m('gear',"Godsword + GWD uniques","God Wars Dungeon."),
+    m('gear',"Amulet of rancour / Noxious halberd","Araxxor."),
+    m('gear',"Infernal cape","Inferno."),
+    m('gear',"Raid megarares","Tbow/Ancestral (CoX) · Scythe/Rapier/Avernic (ToB) · Masori/Shadow/Fang (ToA)."),
+
+    // ---------------- SKILL THRESHOLDS ----------------
+    m('skills',"Prayer 43","Protect from Melee."),
+    m('skills',"Magic 55","High Level Alchemy — core iron money."),
+    m('skills',"Firemaking 50","Wintertodt."),
+    m('skills',"Agility 60","Shortcuts + run energy; push toward Graceful."),
+    m('skills',"Woodcutting 60","Woodcutting Guild / rune axe."),
+    m('skills',"Fishing 62","Swan Song; barbarian fishing."),
+    m('skills',"Runecraft 60","DT2 gate; Guardians of the Rift."),
+    m('skills',"Herblore 70","Song of the Elves gate."),
+    m('skills',"Herblore 77","Dump quest XP lamps here (make-or-break skill)."),
+    m('skills',"Herblore 81","Saradomin brews — bossing supply."),
+    m('skills',"Slayer 78","Large unlock tier."),
+    m('skills',"Crafting 80","Dragonstone / enchanting toward zenyte."),
+    m('skills',"Magic 87","Enchant amulet of fury; high-tier spells."),
+    m('skills',"Slayer 85"),
+    m('skills',"Firemaking 75 + Magic 75","Desert Treasure II gate."),
+    m('skills',"Mining 72 / Thieving 72 / WC 71","Boostable quest-cape gates."),
+    m('skills',"SotE cluster: Agi/Con/Farm/Herb/Hunter 70","Song of the Elves requirements."),
+    m('skills',"Combat level 85","Dream Mentor."),
+    m('skills',"Slayer 95","Alchemical Hydra — DHL / ferocious gloves."),
+    m('skills',"Barb-fishing checkpoints 74/84/91/94","Passive Agility + Strength."),
+
+    // ---------------- GROUP & GIM (shared) ----------------
+    m('group',"Both grab free GIM hybrid armour",null,true),
+    m('group',"Set up coordination (Discord/voice) + session-goal cadence",null,true),
+    m('group',"Confirm roles — A: Skiller/Processor + Herblore/Farming · B: Combat/Slayer + Quest rush",null,true),
+    m('group',"Decide & lock Prestige on/off",null,true),
+    m('group',"One player completes Cook's Assistant (storage prereq)",null,true),
+    m('group',"Reach minimum total level for Group Storage",null,true),
+    m('group',"Unlock Group Storage (80 slots)",null,true),
+    m('group',"Group reaches 5 weeks old — storage-unlock tasks available","Hard gate; nothing you do speeds this up.",true),
+    m('group',"First storage-unlock task done (+slots)",null,true),
+    m('group',"Group storage → 120 slots",null,true),
+    m('group',"Group storage → 160 slots",null,true),
+    m('group',"Group storage → 200 slots (max)",null,true),
+    m('group',"Potion pipeline running (A ≥77 Herblore + farm runs)",null,true),
+    m('group',"Blast Furnace bar pipeline established",null,true),
+    m('group',"Both unlock fairy rings",null,true),
+    m('group',"Both build a POH with teleport portals",null,true),
+    m('group',"Managing Miscellania set up (passive supplies)",null,true),
+    m('group',"First duo boss trip",null,true),
+    m('group',"First duo raid — ToA entry",null,true),
+    m('group',"First megarare / big group drop 🎉",null,true),
+  ];
+  const map = {};
+  list.forEach((it, i) => { map["s"+String(i).padStart(3,"0")] = it; });
+  return map;
+}
+
+const LANE_META = {
+  quests:{name:"Quests / Unlocks", icon:"📜"},
+  gear:  {name:"Gear Progression", icon:"⚔️"},
+  skills:{name:"Skill Thresholds", icon:"📈"},
+  group: {name:"Group & GIM",      icon:"🛡️"},
+};
+const LANE_ORDER = ["quests","gear","skills","group"];
+
+function buildSeedState(){
+  return {
+    meta:{
+      groupName:"Our GIM",
+      groupStartDate:"",
+      prestige:false,
+      players:{
+        A:{label:"Player A", role:"Skiller · Processor · Herblore / Farming"},
+        B:{label:"Player B", role:"Combat · Slayer · Quest / teleport rush"}
+      }
+    },
+    milestones: buildSeedMilestones()
+  };
+}
+
+/* ============================ STATE ==================================== */
+let state = null;
+let myId = LS.get("gim_identity") || null;      // 'A' | 'B' | 'view' | null
+let editing = false;
+
+/* apply {path:value} updates to a plain object (null value = delete) */
+function applyUpdates(obj, updates){
+  for(const [path,val] of Object.entries(updates)){
+    const parts = path.split("/"); let cur = obj;
+    for(let i=0;i<parts.length-1;i++){
+      if(cur[parts[i]]==null || typeof cur[parts[i]]!=="object") cur[parts[i]]={};
+      cur = cur[parts[i]];
+    }
+    const last = parts[parts.length-1];
+    if(val===null) delete cur[last]; else cur[last]=val;
+  }
+}
+
+/* commit updates: optimistic local apply + render, then persist */
+function commit(updates){
+  applyUpdates(state, updates);
+  render();
+  if(online && dbRoot){
+    import("https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js").then(({update})=>{
+      update(dbRoot, updates).catch(err=>console.warn("sync write failed",err));
+    });
+  } else {
+    LS.set("gim_state_"+BOARD_ID, JSON.stringify(state));
+  }
+}
+
+/* ============================ INIT ==================================== */
+async function init(){
+  if(isConfigured){
+    try{
+      const {initializeApp} = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js");
+      const {getDatabase, ref, onValue, get, set} =
+        await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js");
+      const app = initializeApp(firebaseConfig);
+      db = getDatabase(app);
+      dbRoot = ref(db, "boards/"+BOARD_ID);
+      online = true;
+      setBanner(true, "Connected — live syncing both players via Firebase.");
+      const snap = await get(dbRoot);
+      if(!snap.exists()){ await set(dbRoot, buildSeedState()); }
+      onValue(dbRoot, (s)=>{ const v=s.val(); if(v){ state=v; ensureShape(); render(); } });
+      return;
+    }catch(err){
+      console.warn("Firebase init failed, falling back to local mode:", err);
+      setBanner(false, "Couldn't reach Firebase — running in local mode. Check your config / database rules.");
+    }
+  }
+  // local mode
+  online = false;
+  const saved = LS.get("gim_state_"+BOARD_ID);
+  state = saved ? JSON.parse(saved) : buildSeedState();
+  ensureShape();
+  render();
+}
+
+function ensureShape(){
+  if(!state.meta) state.meta = buildSeedState().meta;
+  if(!state.meta.players) state.meta.players = buildSeedState().meta.players;
+  if(!state.milestones) state.milestones = {};
+}
+
+function setBanner(ok, text){
+  const b = document.getElementById("syncBanner");
+  const t = document.getElementById("syncText");
+  t.textContent = text; b.classList.toggle("ok", ok);
+}
+
+/* ======================= identity handling ============================= */
+function openIdentity(){
+  const modal = document.getElementById("identityModal");
+  const box = document.getElementById("identityChoices");
+  const p = state.meta.players;
+  box.innerHTML = "";
+  [["A",p.A.label],["B",p.B.label]].forEach(([id,label])=>{
+    const btn = document.createElement("button");
+    btn.className="choice"; btn.textContent="I'm "+label;
+    btn.onclick=()=>{ setIdentity(id); };
+    box.appendChild(btn);
+  });
+  const v = document.createElement("button");
+  v.className="choice view"; v.textContent="Just viewing (read-only)";
+  v.onclick=()=>setIdentity("view");
+  box.appendChild(v);
+  modal.style.display="flex";
+}
+function setIdentity(id){
+  myId = id; LS.set("gim_identity", id);
+  document.getElementById("identityModal").style.display="none";
+  render();
+}
+
+/* ============================= RENDER ================================= */
+function render(){
+  if(!state) return;
+  const p = state.meta.players;
+
+  // identity chip
+  document.getElementById("whoLabel").textContent =
+    myId==="view" ? "Viewer" : myId ? p[myId].label : "—";
+
+  // players HUD
+  const pc = document.getElementById("players"); pc.innerHTML="";
+  ["A","B"].forEach(id=>{
+    const pl = p[id];
+    const el = document.createElement("div");
+    el.className = "plate"+(myId===id?" mine":"");
+    if(editing){
+      el.innerHTML = `
+        <input value="${esc(pl.label)}" data-edit="label" data-pid="${id}" aria-label="Player name"/>
+        <input class="role-in" value="${esc(pl.role)}" data-edit="role" data-pid="${id}" aria-label="Player role"/>`;
+    } else {
+      el.innerHTML = `<div class="name">${esc(pl.label)}</div><div class="role">${esc(pl.role)}</div>`;
+    }
+    pc.appendChild(el);
+  });
+
+  // group meta
+  document.getElementById("groupName").value = state.meta.groupName||"";
+  document.getElementById("startDate").value = state.meta.groupStartDate||"";
+  const weeks = groupWeeks();
+  document.getElementById("ageNum").textContent = weeks==null ? "–" : weeks;
+  const gate = document.getElementById("storageGate");
+  const gateOpen = weeks!=null && weeks>=5;
+  gate.className = "gate "+(gateOpen?"open":"locked");
+  document.getElementById("gateText").textContent =
+    weeks==null ? "Set start date" : gateOpen ? "Storage unlocks available" : `Storage unlocks in ${5-weeks}w`;
+  const on = !!state.meta.prestige;
+  document.getElementById("prestigeToggle").className = "toggle"+(on?" on":"");
+  document.getElementById("prestigeStar").textContent = on?"★":"☆";
+  document.getElementById("prestigeStar").style.color = on?"var(--gold)":"var(--muted)";
+  document.getElementById("prestigeText").textContent = on?"On (cosmetic)":"Off";
+
+  // lanes
+  const lanes = document.getElementById("lanes"); lanes.innerHTML="";
+  const byLane = {}; LANE_ORDER.forEach(l=>byLane[l]=[]);
+  Object.entries(state.milestones||{}).forEach(([id,mitem])=>{
+    if(byLane[mitem.lane]) byLane[mitem.lane].push([id,mitem]);
+  });
+  LANE_ORDER.forEach(lane=>{
+    const items = byLane[lane].sort((a,b)=>(a[1].order||0)-(b[1].order||0));
+    lanes.appendChild(renderLane(lane, items, p));
+  });
+}
+
+function renderLane(lane, items, p){
+  const meta = LANE_META[lane];
+  const el = document.createElement("div"); el.className="lane";
+  const total = items.length;
+
+  let countHTML, pct;
+  if(lane==="group"){
+    const done = items.filter(([,it])=>it.status.S?.state==="done").length;
+    pct = total? Math.round(done/total*100):0;
+    countHTML = `<b>${done}</b> / ${total} shared`;
+  } else {
+    const dA = items.filter(([,it])=>it.status.A?.state==="done").length;
+    const dB = items.filter(([,it])=>it.status.B?.state==="done").length;
+    pct = total? Math.round((dA+dB)/(total*2)*100):0;
+    countHTML = `${esc(shortLabel(p.A.label))} <b>${dA}</b> · ${esc(shortLabel(p.B.label))} <b>${dB}</b> / ${total}`;
+  }
+
+  const head = document.createElement("div"); head.className="lane-head";
+  head.innerHTML = `
+    <div class="top"><span class="icon">${meta.icon}</span><h2>${meta.name}</h2></div>
+    <div class="lane-count">${countHTML}</div>
+    <div class="bar"><span style="width:${pct}%"></span></div>`;
+  el.appendChild(head);
+
+  const rows = document.createElement("div"); rows.className="rows";
+  items.forEach(([id,it])=> rows.appendChild(renderRow(lane,id,it,p)));
+  el.appendChild(rows);
+
+  // add-milestone control (edit mode)
+  const add = document.createElement("div"); add.className="add";
+  add.innerHTML = `<input placeholder="New milestone in ${meta.name}…" data-add="${lane}"/>
+                   <button data-addbtn="${lane}">Add</button>`;
+  el.appendChild(add);
+  return el;
+}
+
+function renderRow(lane,id,it,p){
+  const row = document.createElement("div"); row.className="row";
+  const shared = it.lane==="group" || it.shared;
+
+  // dots
+  const dots = document.createElement("div");
+  dots.className = "dots"+(shared?"":" paired");
+  if(shared){
+    dots.appendChild(dot(id,"S",it.status.S,canEdit("S")));
+  } else {
+    const dA = dot(id,"A",it.status.A,canEdit("A")); tag(dA, shortLabel(p.A.label));
+    const dB = dot(id,"B",it.status.B,canEdit("B")); tag(dB, shortLabel(p.B.label));
+    dots.appendChild(dA); dots.appendChild(dB);
+  }
+
+  const line = document.createElement("div"); line.className="line";
+  const title = document.createElement("div"); title.className="title";
+  title.innerHTML = esc(it.title);
+  line.appendChild(dots); line.appendChild(title);
+  row.appendChild(line);
+
+  if(it.note && !editing){
+    const n=document.createElement("div"); n.className="note"; n.textContent=it.note; row.appendChild(n);
+  }
+  // latest completion date
+  const d = latestDate(it, shared);
+  if(d && !editing){
+    const ds=document.createElement("div"); ds.className="datestamp"; ds.textContent="✓ "+d; row.appendChild(ds);
+  }
+
+  // edit affordances
+  const er = document.createElement("div"); er.className="editrow";
+  er.innerHTML = `
+    <button class="mini" data-act="up" data-id="${id}">↑</button>
+    <button class="mini" data-act="down" data-id="${id}">↓</button>
+    <button class="mini" data-act="rename" data-id="${id}">Rename</button>
+    <button class="mini" data-act="shared" data-id="${id}">${shared?"Make individual":"Make shared"}</button>
+    <button class="mini danger" data-act="del" data-id="${id}">Delete</button>`;
+  row.appendChild(er);
+  if(editing){
+    const ni=document.createElement("input"); ni.className="editnote-in"; ni.placeholder="Note (optional)…";
+    ni.value=it.note||""; ni.dataset.note=id; row.appendChild(ni);
+  }
+  return row;
+}
+
+function dot(id,who,st,editable){
+  const b=document.createElement("button");
+  b.className="dot-btn"+(editable?"":" locked");
+  b.dataset.state=(st&&st.state)||"none";
+  b.dataset.id=id; b.dataset.who=who;
+  b.setAttribute("aria-label", who+" status: "+b.dataset.state);
+  if(!editable) b.disabled=true;
+  return b;
+}
+function tag(dotEl,label){ const t=document.createElement("span"); t.className="tag"; t.textContent=label; dotEl.appendChild(t); }
+
+function canEdit(who){
+  if(myId==="view"||!myId) return false;
+  if(who==="S") return true;
+  return who===myId;
+}
+
+/* ========================= interactions =============================== */
+document.addEventListener("click",(e)=>{
+  const dotBtn = e.target.closest(".dot-btn");
+  if(dotBtn && !dotBtn.disabled){
+    cycleDot(dotBtn.dataset.id, dotBtn.dataset.who); return;
+  }
+  const act = e.target.closest("[data-act]");
+  if(act){ rowAction(act.dataset.act, act.dataset.id); return; }
+  const addBtn = e.target.closest("[data-addbtn]");
+  if(addBtn){ addMilestone(addBtn.dataset.addbtn); return; }
+});
+
+function cycleDot(id, who){
+  const cur = state.milestones[id].status[who]?.state || "none";
+  const next = cur==="none" ? "wip" : cur==="wip" ? "done" : "none";
+  const base = `milestones/${id}/status/${who}`;
+  const updates = { [base+"/state"]: next };
+  updates[base+"/date"] = next==="done" ? today() : null;
+  commit(updates);
+}
+
+function rowAction(act,id){
+  const it = state.milestones[id];
+  if(act==="del"){
+    if(confirm("Delete this milestone?")) commit({["milestones/"+id]: null});
+  } else if(act==="rename"){
+    const v = prompt("Milestone name:", it.title); if(v!=null && v.trim()) commit({["milestones/"+id+"/title"]: v.trim()});
+  } else if(act==="shared"){
+    const makeShared = !(it.lane==="group"||it.shared);
+    const status = makeShared ? SH() : IND();
+    commit({["milestones/"+id+"/shared"]: makeShared, ["milestones/"+id+"/status"]: status});
+  } else if(act==="up"||act==="down"){
+    reorder(id, act);
+  }
+}
+
+function reorder(id, dir){
+  const it = state.milestones[id];
+  const sibs = Object.entries(state.milestones)
+    .filter(([,m])=>m.lane===it.lane).sort((a,b)=>(a[1].order||0)-(b[1].order||0));
+  const idx = sibs.findIndex(([sid])=>sid===id);
+  const swapIdx = dir==="up"? idx-1 : idx+1;
+  if(swapIdx<0||swapIdx>=sibs.length) return;
+  const [aId,aM]=sibs[idx], [bId,bM]=sibs[swapIdx];
+  commit({["milestones/"+aId+"/order"]: bM.order, ["milestones/"+bId+"/order"]: aM.order});
+}
+
+function addMilestone(lane){
+  const inp = document.querySelector(`[data-add="${lane}"]`);
+  const title = inp && inp.value.trim(); if(!title) return;
+  const maxOrder = Math.max(0, ...Object.values(state.milestones)
+    .filter(m=>m.lane===lane).map(m=>m.order||0));
+  const shared = lane==="group";
+  const nid = "m_"+Date.now().toString(36);
+  commit({["milestones/"+nid]: {lane, title, note:"", shared, order:maxOrder+10, status: shared?SH():IND()}});
+}
+
+/* note edits + player edits: commit on change (blur) */
+document.addEventListener("change",(e)=>{
+  const t=e.target;
+  if(t.dataset.note!=null){ commit({["milestones/"+t.dataset.note+"/note"]: t.value}); }
+  else if(t.dataset.edit==="label"){ commit({["meta/players/"+t.dataset.pid+"/label"]: t.value}); }
+  else if(t.dataset.edit==="role"){ commit({["meta/players/"+t.dataset.pid+"/role"]: t.value}); }
+  else if(t.id==="groupName"){ commit({["meta/groupName"]: t.value}); }
+  else if(t.id==="startDate"){ commit({["meta/groupStartDate"]: t.value}); }
+});
+document.addEventListener("keydown",(e)=>{
+  if(e.key==="Enter"){
+    const t=e.target;
+    if(t.dataset && t.dataset.add){ addMilestone(t.dataset.add); }
+  }
+});
+
+/* top controls */
+document.getElementById("editBtn").onclick = ()=>{
+  editing=!editing;
+  document.body.classList.toggle("editing",editing);
+  document.getElementById("editBtn").classList.toggle("active",editing);
+  document.getElementById("editBtn").textContent = editing?"Done editing":"Edit board";
+  render();
+};
+document.getElementById("switchBtn").onclick = openIdentity;
+document.getElementById("prestigeToggle").onclick = ()=> commit({["meta/prestige"]: !state.meta.prestige});
+
+/* ============================ utils =================================== */
+function today(){ return new Date().toISOString().slice(0,10); }
+function groupWeeks(){
+  const s = state.meta.groupStartDate; if(!s) return null;
+  const diff = (Date.now() - new Date(s+"T00:00:00").getTime())/(1000*60*60*24*7);
+  return Math.max(0, Math.floor(diff));
+}
+function latestDate(it, shared){
+  const keys = shared? ["S"]:["A","B"];
+  const ds = keys.map(k=>it.status[k]?.date).filter(Boolean).sort();
+  return ds.length? ds[ds.length-1]:null;
+}
+function shortLabel(l){ if(!l) return "?"; const w=l.trim().split(/\s+/); 
+  return w.length>1 ? (w[0][0]+w[1][0]).toUpperCase() : l.slice(0,3); }
+function esc(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+/* ============================ go ====================================== */
+(async ()=>{
+  await init();
+  if(!myId) openIdentity();
+})();
+</script>
+</body>
+</html>
