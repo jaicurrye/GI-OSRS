@@ -1,7 +1,11 @@
 # Milan Jansen
+*Weekend op Landgoed De Linde — versie 4*
 
 ## Wie je bent
 Je bent ondernemer. Jij en Kees hebben ooit samen een bedrijfsidee geprobeerd dat mislukte.
+
+## Wat iedereen van jou mag weten
+Iedereen weet dat jouw bedrijf het zwaar heeft; je praat er zelf luchtig over. Dat jij en Kees ooit samen iets probeerden dat misliep, is oude koek in de groep.
 
 ## Jouw geheim
 Je bedrijf staat op omvallen. Kees leende je €12.000 en wilde het terug. Rond **22:50** sloop je de bibliotheek in om een schuldbekentenis uit zijn map te halen.
@@ -25,14 +29,18 @@ Kees kwam binnen terwijl je zocht. Hij pakte het document terug, maar een klein 
 - Kees leefde toen jij hem rond **22:58** achterliet. Hij was toen alleen in de bibliotheek.
 - De zware bronzen hertenboekensteun stond op het lage tafeltje.
 - Kees had zijn telefoon bij zich; hij legde hem tijdens jullie woordenwisseling op tafel.
-- Daan zag je waarschijnlijk uit de bibliotheek komen.
+- Daan zag je uit de bibliotheek komen.
 - Fleur was van 21:30 tot 22:10 bij jou in de serre.
 - Van **23:11 tot 23:14** stond je onafgebroken met Fleur te praten op de overloop. Jullie waren toen allebei boven.
+- Boven hoorde je niets bijzonders; de deuren op de overloop stonden dicht en jullie stonden te praten.
+- Toen je rond **23:22** de trap afliep, stond Iris nog boven aan de trap. Ze zei niets.
 - Bram en Lucas zaten al in de salon toen jij en Iris daar rond **23:25** binnenkwamen.
 - Iris kwam rond 23:25 tegelijk met jou de salon binnen en bleef daar tot 23:50.
 
 ## Wat je liever verborgen houdt
 Je schuld, je poging de schuldbekentenis te stelen en het afgescheurde papiertje in je broekzak.
+
+Je mag hierover liegen of zwijgen, maar je mag geen getuigen, gesprekken of waarnemingen verzinnen die niet op je blad staan.
 
 ## Jouw doel
 Je bent een uitstekende rode haring. Geef je aanwezigheid in de bibliotheek niet te makkelijk prijs — maar besef dat je gesprek met Fleur je enige harde dekking is.

@@ -1,7 +1,11 @@
 # Sanne Vos
+*Weekend op Landgoed De Linde — versie 4*
 
 ## Wie je bent
 Je bent fotograaf en hebt jaren geleden kort iets met Kees gehad.
+
+## Wat iedereen van jou mag weten
+De groep weet dat jij en Kees ooit kort iets hadden. Jullie gingen daarna normaal met elkaar om, al bleef het soms wat ongemakkelijk.
 
 ## Jouw geheim
 Kees had nog oude intieme berichten van jullie korte relatie. Hij zei dat ze verwijderd waren, maar dat bleek niet zo te zijn. Rond **22:35** ging je daarom de bibliotheek in om zijn laptoptas te doorzoeken. Je vond niets.
@@ -18,16 +22,19 @@ Kees had nog oude intieme berichten van jullie korte relatie. Hij zei dat ze ver
 - Vanaf ongeveer **23:50** zit de hele groep bij elkaar in de salon.
 
 ## Wat jij weet
-- Rond **22:35** stond in de bibliotheek een zware bronzen boekensteun in de vorm van een hert op het lage tafeltje. Je verplaatste hem om bij de tas te kunnen en zette hem terug. Er zat duidelijk stof op.
+- Rond **21:40** liep je langs de bijkeuken en zag je Lucas daar met een envelop in zijn handen staan. Hij draaide zich weg toen hij je zag.
+- Rond **22:35** stond in de bibliotheek een zware bronzen boekensteun in de vorm van een hert op het lage tafeltje. Je verplaatste hem om bij de tas te kunnen en zette hem terug. Er zat overal een dun laagje stof op.
 - Kees kwam tijdens jouw zoektocht niet binnen. De bibliotheek was leeg.
 - Terwijl je tussen 22:45 en 23:00 op je kamer zat, hoorde je meerdere keren iemand over de overloop lopen. Je zag niemand.
 - Daan was van **23:02 tot 23:45** onafgebroken bij jou.
-- Rond **23:12** hoorde je vanuit de serre, door de gang heen, een harde doffe klap uit de richting van de bibliotheek. Jij en Daan keken elkaar aan. Jullie dachten dat iemand iets had laten vallen.
+- Rond **23:12** hoorde je vanuit de serre, door de hal heen, een harde doffe klap uit de richting van de bibliotheek. Jij en Daan keken elkaar aan. Jullie dachten dat iemand iets had laten vallen.
 - Rond **23:20** liepen jij en Daan samen vanuit de serre naar de eetkamer. Lucas kon jullie vanuit de salon zien.
 - Noor en Fleur waren van **23:20 tot 23:45** onafgebroken bij jou in de eetkamer.
 
 ## Wat je liever verborgen houdt
 Dat je de bibliotheek doorzocht en de bronzen boekensteun hebt aangeraakt.
+
+Je mag hierover liegen of zwijgen, maar je mag geen getuigen, gesprekken of waarnemingen verzinnen die niet op je blad staan.
 
 ## Jouw doel
 Leg je aanwezigheid bij een mogelijk moordwapen pas uit wanneer dat echt nodig is.

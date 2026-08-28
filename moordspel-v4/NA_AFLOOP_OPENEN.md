@@ -5,12 +5,12 @@
 ## Werkelijke reconstructie
 Milan verlaat Kees rond 22:58 levend in de bibliotheek. Kort daarna hoort Daan Kees binnen praten — alleen Kees' stem, met stiltes ertussen: hij telefoneert. Iris komt rond 23:05 van boven naar beneden en gaat de bibliotheek in. Rond 23:12 slaat zij Kees één keer met de bronzen hertenboekensteun.
 
-Iris veegt het voorwerp af met haar lichtgrijze vest en neemt Kees' telefoon mee. Om 23:15 belt Fleur naar die telefoon. Iris neemt op met Kees' stem en zegt alleen: "Niet nu, Fleur. Morgen." Daarna gaat ze naar haar kamer, verstopt de telefoon in haar toilettas en maakt het vest oppervlakkig schoon. Noor ziet haar rond 23:20 boven aan de trap met het opgevouwen vest.
+Op de boekensteun lag overal een dun laagje stof — Sanne zag dat om 22:35. Iris veegt het voorwerp af met haar lichtgrijze vest, waardoor er één schoongeveegde plek in dat stof achterblijft; Bram ziet die plek als hij het lichaam om 00:50 vindt. De map met de schuldbekentenis ligt onaangeroerd bij het lichaam; het ontbrekende hoekje past op Milans papiertje. Iris neemt Kees' telefoon mee. Om 23:15 belt Fleur naar die telefoon. Iris neemt op met Kees' stem en zegt alleen: "Niet nu, Fleur. Morgen." Daarna gaat ze naar haar kamer, verstopt de telefoon in haar toilettas en maakt het vest oppervlakkig schoon. Noor ziet haar rond 23:20 boven aan de trap met het opgevouwen vest.
 
 ## Bewijsbaar moordvenster
-- 22:58: Milan laat Kees levend achter (bevestigd door Daans waarneming van Milan).
+- 22:58: Milan verlaat de bibliotheek (gezien door Daan). Dat Kees op dat moment nog leeft, blijkt pas uit Daans waarneming van ~22:59 hieronder.
 - ~22:59: Daan hoort Kees alleen praten, klinkend als een telefoongesprek. Kees leeft en heeft zijn telefoon bij zich (ook bevestigd door Milan en indirect door Noor).
-- 23:12: Daan en Sanne horen samen vanuit de serre een harde doffe klap uit de richting van de bibliotheek. Bram hoort vanuit de keuken onafhankelijk een dof geluid op ongeveer hetzelfde moment.
+- 23:12: Daan en Sanne horen samen vanuit de serre een harde doffe klap uit de richting van de bibliotheek. Bram hoort vanuit de keuken onafhankelijk een dof geluid op ongeveer hetzelfde moment; Noor en Lucas zien hem opkijken.
 - 23:15: Fleur spreekt telefonisch iemand die klinkt als Kees. Het gesprek duurt nog geen vier seconden, "Kees" beantwoordt haar vraag niet en hangt direct op.
 - De telefoon wordt nooit teruggevonden.
 - Het imitatievermogen van Iris is extern bekend bij zowel Lucas als Fleur.
@@ -43,6 +43,8 @@ Bij deze controle tellen eigen verklaringen van de verdachte niet als bewijs.
 4. De fatale klap valt om 23:12 en wordt door drie mensen in twee ruimtes gehoord (Daan, Sanne, Bram).
 5. De telefoon is verdwenen — iemand heeft hem meegenomen.
 6. Fleur krijgt om 23:15 een ultrakort, ontwijkend gesprek met "Kees".
+6a. Het wapen is aanwijsbaar: Sanne zag om 22:35 stof over de hele boekensteun, Bram ziet om 00:50 één schoongeveegde plek.
+6b. Het motief is reconstrueerbaar: Daan en Fleur weten allebei onafhankelijk van een oude benefietrekening waarover Kees niet eerlijk was geweest.
 7. Lucas en Fleur weten onafhankelijk dat Iris Kees overtuigend kon imiteren.
 8. Noor ziet Iris om 23:20 boven aan de trap met haar lichtgrijze vest opgevouwen in haar handen.
 9. Sanne en Milan weten onafhankelijk dat de zware bronzen boekensteun in de bibliotheek stond.
@@ -53,10 +55,12 @@ Bij deze controle tellen eigen verklaringen van de verdachte niet als bewijs.
 - **Lucas:** verborgen schuld en verstopte envelop.
 - **Sanne:** heimelijk in de bibliotheek en aanraken van het waarschijnlijke wapen.
 - **Daan:** affaire en dreigement.
-- **Milan:** grote schuld, daadwerkelijk in de bibliotheek en poging bewijs te stelen.
+- **Milan:** grote schuld, daadwerkelijk in de bibliotheek en poging bewijs te stelen — de uitroep "Dat meen je niet." die Bram om 22:52 hoort, hoort bij deze woordenwisseling en niet bij de daad; die aanwijzing is bedoeld om het moordvenster te vroeg te leggen.
 - **Fleur:** rookgeheim plus een huurcontract van ruim €9.000 waarmee Kees haar liet zitten.
 
 Elke rode haring is oplosbaar: elk van deze zeven heeft op 23:12 minstens één getuige die niet zichzelf is.
+
+Elke haring is bovendien door minstens één ánder blad aan te snijden — Bram via Daan en Fleur, Noor via Daan, Lucas via Sanne, Sanne via Bram en Fleur, Daan via Noor, Milan via Daan, Fleur via Bram — zodat geen enkele speler uitsluitend door vrijwillige zelfonthulling in beeld komt.
 
 ## Ontwerpprincipe
 De oplossing vereist geen bekentenis of verspreking van Iris. Alle cruciale onderdelen — moordvenster, verdwenen telefoon, imitatievermogen, motief, wapenkennis en routewaarneming — bestaan buiten haar eigen rolblad.

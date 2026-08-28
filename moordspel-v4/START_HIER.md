@@ -8,6 +8,8 @@ Jullie zijn met negen oude vrienden een lang weekend weg op **Landgoed De Linde*
 **Buiten:** overdekt terras, grindpad en een oude oranjerie.
 **Boven:** negen gastenkamers, badkamer en overloop.
 
+De bibliotheek heeft een groot raam op de tuinzijde, met uitzicht op het grindpad en de oranjerie.
+
 Kees hoort al jaren bij de vriendengroep. Op zaterdagavond eten jullie samen. Rond **20:00** eindigt het diner en verspreidt iedereen zich door het huis.
 
 ### Wat er is gebeurd

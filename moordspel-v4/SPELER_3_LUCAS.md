@@ -1,7 +1,11 @@
 # Lucas Meijer
+*Weekend op Landgoed De Linde — versie 4*
 
 ## Wie je bent
 Je bent de praktische, rustige vriend van de groep en ging vaak met Kees wielrennen.
+
+## Wat iedereen van jou mag weten
+Jij regelde dit weekend de boodschappen en de wijn. Je was die avond stiller dan gebruikelijk.
 
 ## Jouw geheim
 Vorige maand reed je na een feestje met te veel drank op in Kees' auto en raakte een paaltje. Kees nam de schuld op zich, maar eiste €2.500 van je. Rond **21:35** vond je in de bijkeuken een envelop met jouw naam en de reparatiekosten. Uit paniek verstopte je die achter de handdoeken.
@@ -22,12 +26,14 @@ Vorige maand reed je na een feestje met te veel drank op in Kees' auto en raakte
 - Sanne was van **21:50 tot 22:10** onafgebroken bij jou.
 - Noor was van **22:50 tot 23:20** onafgebroken bij jou.
 - Bram was vanaf ongeveer **22:55** in de keuken en daarna tot 23:45 bij jou.
-- Rond **23:12** keek Bram in de keuken opeens op, alsof hij iets hoorde. Jij hoorde zelf niets duidelijks; de afzuigkap stond aan.
+- Rond **23:12** keek Bram in de keuken opeens op, alsof hij iets hoorde. Jij hoorde zelf niets; de afzuigkap stond aan.
 - Toen jij rond **23:20** de salon inliep, zag je door de open deur naar de hal **Daan en Sanne samen uit de serre komen**. Je hoorde Daan zeggen: "Dan laten we het hierbij." Ze liepen daarna richting eetkamer.
 - Milan en Iris kwamen pas rond **23:25** de salon in. Daarvoor zaten Bram en jij daar alleen.
 
 ## Wat je liever verborgen houdt
 De autorit, de schuld en de verborgen envelop.
+
+Je mag hierover liegen of zwijgen, maar je mag geen getuigen, gesprekken of waarnemingen verzinnen die niet op je blad staan.
 
 ## Jouw doel
 Voorkom dat jouw financiële geheim je tot hoofdverdachte maakt, maar houd feitelijke waarnemingen niet achter als ze beslissend worden.
