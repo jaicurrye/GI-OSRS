@@ -33,7 +33,7 @@ Vorige maand reed je na een feestje met te veel drank op in Kees' auto en raakte
 ## Wat je liever verborgen houdt
 De autorit, de schuld en de verborgen envelop.
 
-Je mag hierover liegen of zwijgen, maar je mag geen getuigen, gesprekken of waarnemingen verzinnen die niet op je blad staan.
+Je mag hierover liegen of zwijgen, maar je mag geen getuigen, gesprekken of waarnemingen verzinnen die niet op je blad staan. Je mag niet beweren dat iemand jou ergens heeft gezien als dat niet werkelijk is gebeurd.
 
 ## Jouw doel
 Voorkom dat jouw financiële geheim je tot hoofdverdachte maakt, maar houd feitelijke waarnemingen niet achter als ze beslissend worden.

@@ -17,7 +17,7 @@ Jij regelde het huis, het eten en het programma. Jij hebt de sleutels van bijna 
 - **20:45–21:15:** alleen boven.
 - **21:30–22:10:** met Milan in de serre.
 - **22:15–22:45:** stiekem roken met Bram bij de oranjerie.
-- **22:45:** je gaat naar boven, naar je kamer.
+- **22:45–23:11:** alleen op je kamer boven.
 - **23:11–23:14:** je staat bij je kamerdeur op de overloop en praat een paar minuten met Milan, die op weg is naar de badkamer. Jullie hebben het over de wijnkast en over hoe stil Kees die avond was.
 - Rond **23:15** bel je Kees vanuit je kamer om naar de sleutel van de wijnkast te vragen.
 - "Kees" neemt vrijwel meteen op en zegt alleen: **"Niet nu, Fleur. Morgen."** Daarna wordt opgehangen.
@@ -40,7 +40,7 @@ Jij regelde het huis, het eten en het programma. Jij hebt de sleutels van bijna 
 ## Wat je liever verborgen houdt
 Je rookgeheim en vooral het huurcontract — dat laatste geeft je een fors financieel motief. Daardoor wil je aanvankelijk liever niet vertellen waar je tussen 22:15 en 22:45 was en waarover je vrijdag ruzie had.
 
-Je mag hierover liegen of zwijgen, maar je mag geen getuigen, gesprekken of waarnemingen verzinnen die niet op je blad staan.
+Je mag hierover liegen of zwijgen, maar je mag geen getuigen, gesprekken of waarnemingen verzinnen die niet op je blad staan. Je mag niet beweren dat iemand jou ergens heeft gezien als dat niet werkelijk is gebeurd.
 
 ## Jouw doel
 Gebruik het telefoongesprek aanvankelijk als bewijs dat Kees om 23:15 nog leefde. Als de tijdlijn daarmee botst, denk dan opnieuw na over wat je werkelijk kunt bewijzen.

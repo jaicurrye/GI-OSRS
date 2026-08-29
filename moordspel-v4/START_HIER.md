@@ -14,7 +14,7 @@ Kees hoort al jaren bij de vriendengroep. Op zaterdagavond eten jullie samen. Ro
 
 ### Wat er is gebeurd
 
-Vanaf ongeveer **23:50** zit de hele groep bij elkaar in de salon en de eetkamer. Vanaf dat moment is niemand nog langer dan een paar minuten alleen weg geweest.
+Vanaf ongeveer **23:50** zit de hele groep bij elkaar in de salon. Vanaf dat moment is niemand nog langer dan een paar minuten alleen weg geweest.
 
 Rond **00:50** gaan Bram en Fleur samen kijken waar Kees blijft. Zij vinden hem dood in de bibliotheek.
 

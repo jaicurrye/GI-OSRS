@@ -21,7 +21,7 @@ Kees kwam binnen terwijl je zocht. Hij pakte het document terug, maar een klein 
 - Rond **22:58** verlaat je de bibliotheek en ga je naar boven.
 - **23:00–23:22:** je bent boven.
 - **23:11–23:14:** je loopt naar de badkamer en komt op de overloop Fleur tegen bij haar kamerdeur. Jullie blijven een paar minuten staan praten over de wijnkast en over hoe stil Kees die avond was. Pas rond 23:14 loop je door.
-- Rond **23:22** ga je naar beneden; bij de eetkamerdeur passeer je Noor.
+- Rond **23:22** ga je naar beneden; bij de eetkamerdeur passeer je Noor. Je blijft even in de hal staan en loopt om 23:25 samen met Iris de salon in.
 - **23:25–23:50:** je komt de salon binnen. Bram en Lucas zitten er al; Iris komt tegelijk met jou binnen.
 - Vanaf ongeveer **23:50** zit de hele groep bij elkaar.
 
@@ -40,7 +40,7 @@ Kees kwam binnen terwijl je zocht. Hij pakte het document terug, maar een klein 
 ## Wat je liever verborgen houdt
 Je schuld, je poging de schuldbekentenis te stelen en het afgescheurde papiertje in je broekzak.
 
-Je mag hierover liegen of zwijgen, maar je mag geen getuigen, gesprekken of waarnemingen verzinnen die niet op je blad staan.
+Je mag hierover liegen of zwijgen, maar je mag geen getuigen, gesprekken of waarnemingen verzinnen die niet op je blad staan. Je mag niet beweren dat iemand jou ergens heeft gezien als dat niet werkelijk is gebeurd.
 
 ## Jouw doel
-Je bent een uitstekende rode haring. Geef je aanwezigheid in de bibliotheek niet te makkelijk prijs — maar besef dat je gesprek met Fleur je enige harde dekking is.
+Je zit er tot over je oren in zonder dat je iets met de dood van Kees te maken hebt. Geef je aanwezigheid in de bibliotheek niet te makkelijk prijs — maar besef dat je gesprek met Fleur je enige harde dekking is.

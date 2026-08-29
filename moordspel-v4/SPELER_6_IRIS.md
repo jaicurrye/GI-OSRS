@@ -17,7 +17,7 @@ Jaren geleden gebruikten jij en Kees samen een rekening voor een benefietactie. 
 - **21:00–22:25:** wisselend, grotendeels alleen.
 - Rond **22:25** zegt Kees dat hij later in de bibliotheek met je wil praten.
 - **22:35–22:42:** je bent alleen in de keuken. Er is verder niemand.
-- **22:47–23:05:** je bent alleen op je kamer boven. Op de overloop is het rond kwart voor elf nog druk; daarna hoor je niemand meer.
+- **22:47–23:05:** je bent alleen op je kamer boven. Je hoort af en toe iemand over de overloop lopen, maar je ziet niemand.
 - Rond **23:05** loop je de trap af en ga je de bibliotheek binnen. Je ziet onderweg niemand.
 - Rond **23:07** begin je met Kees te praten.
 - Rond **23:12** sla je Kees één keer met de zware bronzen hertenboekensteun.
@@ -27,6 +27,7 @@ Jaren geleden gebruikten jij en Kees samen een rekening voor een benefietactie. 
 - Je gaat direct naar boven naar je kamer, maakt je vest oppervlakkig schoon en verstopt Kees' telefoon in je toilettas.
 - Rond **23:20** ziet Noor je boven aan de trap met het opgevouwen vest.
 - Rond **23:22** loopt Milan langs je de trap af; jij blijft nog even boven.
+- Rond **23:24** loop je de trap af.
 - **23:25–23:50:** je zit in de salon. Bram en Lucas zitten daar al; Milan komt tegelijk met jou binnen.
 - Daarna blijven jullie tussen de anderen.
 

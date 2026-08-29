@@ -54,7 +54,7 @@ Bij deze controle tellen eigen verklaringen van de verdachte niet als bewijs.
 - **Noor:** doorzoeken van Kees' jas en zakelijk conflict.
 - **Lucas:** verborgen schuld en verstopte envelop.
 - **Sanne:** heimelijk in de bibliotheek en aanraken van het waarschijnlijke wapen.
-- **Daan:** affaire en dreigement.
+- **Daan:** affaire en dreigement — de zin "Dan laten we het hierbij." die Lucas om 23:20 opvangt, gaat over Sannes vragen naar Daans ruzie met Kees en heeft niets met de daad te maken.
 - **Milan:** grote schuld, daadwerkelijk in de bibliotheek en poging bewijs te stelen — de uitroep "Dat meen je niet." die Bram om 22:52 hoort, hoort bij deze woordenwisseling en niet bij de daad; die aanwijzing is bedoeld om het moordvenster te vroeg te leggen.
 - **Fleur:** rookgeheim plus een huurcontract van ruim €9.000 waarmee Kees haar liet zitten.
 

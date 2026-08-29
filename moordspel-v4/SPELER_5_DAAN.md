@@ -5,7 +5,7 @@
 Je bent een van de meest sociale vrienden. Kees wist meer over jouw privéleven dan je prettig vond.
 
 ## Wat iedereen van jou mag weten
-Jij houdt de sfeer erin en praat met iedereen. Rond kwart voor tien had je een kort, gespannen gesprek met Kees in de hal; anderen kunnen dat gezien hebben.
+Jij houdt de sfeer erin en praat met iedereen. Rond **21:50** had je een kort, gespannen gesprek met Kees in de hal; anderen kunnen dat gezien hebben.
 
 ## Jouw geheim
 Je hebt al maanden een affaire met iemand buiten de groep. Kees ontdekte het en dreigde na het weekend jouw partner in te lichten. Rond **22:20** vertelde je Noor alles op het terras.
@@ -18,7 +18,7 @@ Je hebt al maanden een affaire met iemand buiten de groep. Kees ontdekte het en 
 - **21:55–22:10:** je loopt wat rond door de hal en de salon.
 - **22:15–22:40:** met Noor op het overdekte terras. Verder was daar niemand.
 - **22:47–22:58:** alleen in de salon.
-- **23:02–23:20:** met Sanne in de serre.
+- **23:02–23:20:** met Sanne in de serre. Sanne vraagt je door over je gespannen gesprek met Kees; je kapt het af met: "Dan laten we het hierbij."
 - **23:20–23:45:** met Sanne in de eetkamer. Noor en Fleur zitten daar ook die hele periode.
 - Vanaf ongeveer **23:50** zit de hele groep bij elkaar in de salon.
 
@@ -36,7 +36,7 @@ Je hebt al maanden een affaire met iemand buiten de groep. Kees ontdekte het en 
 ## Wat je liever verborgen houdt
 De affaire en Kees' dreigement.
 
-Je mag hierover liegen of zwijgen, maar je mag geen getuigen, gesprekken of waarnemingen verzinnen die niet op je blad staan.
+Je mag hierover liegen of zwijgen, maar je mag geen getuigen, gesprekken of waarnemingen verzinnen die niet op je blad staan. Je mag niet beweren dat iemand jou ergens heeft gezien als dat niet werkelijk is gebeurd.
 
 ## Jouw doel
 Je hebt een sterk motief maar ook informatie die het moordvenster sterk kan vernauwen. Bepaal zelf wanneer je die inzet.

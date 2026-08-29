@@ -26,6 +26,7 @@ Kees had nog oude intieme berichten van jullie korte relatie. Hij zei dat ze ver
 - Rond **22:35** stond in de bibliotheek een zware bronzen boekensteun in de vorm van een hert op het lage tafeltje. Je verplaatste hem om bij de tas te kunnen en zette hem terug. Er zat overal een dun laagje stof op.
 - Kees kwam tijdens jouw zoektocht niet binnen. De bibliotheek was leeg.
 - Terwijl je tussen 22:45 en 23:00 op je kamer zat, hoorde je meerdere keren iemand over de overloop lopen. Je zag niemand.
+- In de serre probeerde je Daan te laten vertellen waarover hij en Kees ruzie hadden; hij hield het af met: "Dan laten we het hierbij."
 - Daan was van **23:02 tot 23:45** onafgebroken bij jou.
 - Rond **23:12** hoorde je vanuit de serre, door de hal heen, een harde doffe klap uit de richting van de bibliotheek. Jij en Daan keken elkaar aan. Jullie dachten dat iemand iets had laten vallen.
 - Rond **23:20** liepen jij en Daan samen vanuit de serre naar de eetkamer. Lucas kon jullie vanuit de salon zien.
@@ -34,7 +35,7 @@ Kees had nog oude intieme berichten van jullie korte relatie. Hij zei dat ze ver
 ## Wat je liever verborgen houdt
 Dat je de bibliotheek doorzocht en de bronzen boekensteun hebt aangeraakt.
 
-Je mag hierover liegen of zwijgen, maar je mag geen getuigen, gesprekken of waarnemingen verzinnen die niet op je blad staan.
+Je mag hierover liegen of zwijgen, maar je mag geen getuigen, gesprekken of waarnemingen verzinnen die niet op je blad staan. Je mag niet beweren dat iemand jou ergens heeft gezien als dat niet werkelijk is gebeurd.
 
 ## Jouw doel
 Leg je aanwezigheid bij een mogelijk moordwapen pas uit wanneer dat echt nodig is.

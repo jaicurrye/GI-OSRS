@@ -34,11 +34,12 @@ Rond **21:05** heb je hem in de serre gesmeekt nog een week te wachten. Het gesp
 - Lucas was van **23:20 tot 23:45** bij jou in de salon.
 - Milan en Iris kwamen rond **23:25** de salon binnen. Daarvoor waren zij daar niet.
 - Toen jullie Kees om **00:50** vonden, viel je op dat op de zware bronzen boekensteun overal stof zat, behalve op één plek die schoongeveegd leek.
+- Naast het lichaam lag een open map met papieren. Er leek niets uit weggehaald, maar van één blad was een hoekje afgescheurd.
 
 ## Wat je liever verborgen houdt
 De vriendenpot en de ruzie. Als je Fleur als getuige gebruikt voor je eerdere avond, moet haar rookgeheim waarschijnlijk boven tafel komen.
 
-Je mag hierover liegen of zwijgen, maar je mag geen getuigen, gesprekken of waarnemingen verzinnen die niet op je blad staan.
+Je mag hierover liegen of zwijgen, maar je mag geen getuigen, gesprekken of waarnemingen verzinnen die niet op je blad staan. Je mag niet beweren dat iemand jou ergens heeft gezien als dat niet werkelijk is gebeurd.
 
 ## Jouw doel
 Bescherm je geheim zolang dat kan, maar help uiteindelijk de feiten boven tafel te krijgen.

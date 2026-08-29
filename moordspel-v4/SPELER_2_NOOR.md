@@ -34,7 +34,7 @@ Kees wilde maandag zonder jou verder en had een conceptmail opgesteld waarin hij
 ## Wat je liever verborgen houdt
 Dat je Kees' jas hebt doorzocht.
 
-Je mag hierover liegen of zwijgen, maar je mag geen getuigen, gesprekken of waarnemingen verzinnen die niet op je blad staan.
+Je mag hierover liegen of zwijgen, maar je mag geen getuigen, gesprekken of waarnemingen verzinnen die niet op je blad staan. Je mag niet beweren dat iemand jou ergens heeft gezien als dat niet werkelijk is gebeurd.
 
 ## Jouw doel
 Houd je doorzoeking eerst geheim, maar gebruik je waarnemingen als ze nodig zijn.
