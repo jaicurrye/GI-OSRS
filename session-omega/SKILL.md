@@ -1,0 +1,320 @@
+---
+name: session-omega
+description: End-of-campaign review and next-campaign design for the claude-dnd-skill. Use when a D&D campaign is ending or has ended and the player wants to review it, extract lessons into a DM behaviour contract, and design the theme, setting and characters for the next campaign. Triggers on "session omega", "campaign review", "campaign post-mortem", "end of campaign", "wrap up the campaign", "plan the next campaign", "campaign retrospective", or when a player finishing a long campaign asks what to do next.
+---
+
+# Session Omega
+
+The ritual at the end of a campaign that manufactures the beginning of the next
+one. Session Zero runs before the first session; Session Omega runs after the
+last, and its output *is* the next Session Zero.
+
+It exists because a long campaign is the only source of honest data about how a
+player actually likes to play — and almost everyone throws that data away.
+
+## Invocation
+
+`/session-omega <stage> [campaign]` — or plain language ("let's do the campaign
+review"). With no stage, run `status` and propose the next one.
+
+Stages run in order, but each is independently invocable and independently
+resumable. Never run more than one stage without checking in — these are long,
+and the player decides when to continue.
+
+| Stage | Purpose |
+|---|---|
+| `predict` | **Before the finale.** Capture predictions and hopes, sealed. |
+| `review` | Cold interview. No file reads. Unanchored answers. |
+| `evidence` | Targeted extraction, then reconcile record against memory. |
+| `chronicle` | *Optional.* Narrative keepsake, epilogues, DM reveals. |
+| `contract` | Tiered DM behaviour contract + the three table dials. |
+| `spec` | Taste profile → pre-filled constraint sheet the player overrides. |
+| `world` | Setting skeleton: theme, central conflict, region, three truths. |
+| `party` | Party architecture, then characters tied to world and each other. |
+| `build` | Write the new campaign's files. `/dm:dnd load` works after this. |
+| `audit` | Re-run at ~session 5 and ~15 of the new campaign. Test the contract. |
+
+## Setup — do this first, every stage
+
+```bash
+python3 ${CLAUDE_SKILL_DIR}/scripts/omega_paths.py roots
+python3 ${CLAUDE_SKILL_DIR}/scripts/omega_paths.py campaigns
+python3 ${CLAUDE_SKILL_DIR}/scripts/omega_state.py status <campaign>
+```
+
+`roots` reports the data root, and whether the dnd skill's `templates/` were
+found — `build` needs them. If `dnd_skill_root` is null, ask the player where
+the dnd skill is installed rather than guessing or writing files from memory.
+
+If no progress file exists: `omega_state.py init <campaign> [--new-campaign N]`.
+
+**Record every answer as it is given**, not at the end of a stage:
+
+```bash
+python3 ${CLAUDE_SKILL_DIR}/scripts/omega_state.py record <campaign> <stage> <key> --stdin <<'ANS'
+<the player's answer, verbatim>
+ANS
+```
+
+Verbatim. Do not summarise the player into their own review — a paraphrase made
+at the moment of writing is a paraphrase you will later treat as evidence.
+
+Outputs land in `<campaigns>/<campaign>/omega/`: `progress.json`, `review.md`,
+`contract.md`, `spec.md`, `chronicle.md`.
+
+---
+
+## Stage: `predict`
+
+Run **before the final session**, and only then. If the finale has already
+happened, say so and skip — a prediction written after the fact is worthless,
+and pretending otherwise poisons the comparison in `review`.
+
+Ask four questions, record verbatim, and do not discuss the answers:
+
+1. How do you think this campaign ends?
+2. How do you *want* it to end — the same thing, or something you don't expect
+   to get?
+3. Which thread are you most afraid will be left dangling?
+4. What would make the finale a disappointment, specifically?
+
+Then stop. Do not offer opinions on the predictions, do not foreshadow, and do
+not let the answers influence how the finale is run. Tell the player the answers
+are sealed until `review`.
+
+---
+
+## Stage: `review`
+
+**Read no campaign files during this stage.** The whole point is an unanchored
+account. `evidence` is where the record speaks.
+
+Work through the dimensions in `reference/review-dimensions.md`. Cover all of
+them; skip questions that clearly don't apply to this table.
+
+### Posture: dig, and argue back
+
+The player asked to be pushed. Three rules make that productive rather than
+merely unpleasant:
+
+1. **Vague answers get up to two follow-ups**, and the follow-up always demands
+   a specific instance — a session, a scene, an NPC, a moment. "Combat got
+   stale" is not a finding. "Combat got stale around session 60, when every
+   fight became a resource-attrition problem I'd already solved" is a rule.
+   After two attempts, record it as `impression, unverified` and move on;
+   `evidence` will test it.
+2. **Argue only from cited record.** You were the DM for this campaign. When
+   the player's account contradicts something you can cite, say so and name the
+   session or scene. Never argue from impression, and never argue to defend
+   your own performance — argue because an inaccurate diagnosis produces a bad
+   contract.
+3. **The player gets the last word, always.** If they hold their position after
+   you have made your case, the matter is settled in their favour for the
+   purposes of the review — but record the disagreement:
+
+```bash
+python3 ${CLAUDE_SKILL_DIR}/scripts/omega_state.py dispute <campaign> "<the claim>" \
+  --dm "<what the record shows>" --player "<what they hold>"
+```
+
+Disputed items are not failures of the interview. They are the most interesting
+thing it produces, and `contract` turns them into labelled experiments.
+
+Watch for the failure this posture creates: a player who starts softening real
+complaints to avoid the argument. If answers get shorter and more agreeable
+after a disagreement, name it, drop the pushback for a few questions, and come
+back to the softened answer later.
+
+Write `omega/review.md` as you go.
+
+---
+
+## Stage: `evidence`
+
+Now read. Targeted only — never sweep a 100-session log.
+
+```bash
+python3 ${CLAUDE_SKILL_DIR}/scripts/omega_paths.py extract <campaign> \
+  --what calibration,arc,mortality,npcs,party,sessions
+```
+
+Start with `calibration`. If the table has used `/dm:dnd end`, this returns the
+player's own per-session answers to *"what worked, and what would you adjust?"*
+across the whole campaign — the single richest input to the contract, and
+better evidence than the interview because it was written without hindsight.
+Read them chronologically and look for **the note that recurs**: a complaint
+made once is a mood, a complaint made in sessions 12, 40 and 81 is a rule.
+
+Then, per target:
+
+- `arc` — which beats completed, which were skipped, how often the arc was
+  revised. Frequent revision means the arc wasn't tracking what the player
+  actually pursued.
+- `mortality` — deaths, downed characters, near-TPKs. Compare the real count
+  against what the player said about stakes. A player who says "I was never in
+  danger" and a log with four death saves disagree about something important.
+- `npcs` — attitude shifts, betrayals, allies. Find NPCs who appeared once and
+  vanished; ask whether they were dropped or resolved.
+- `party` — the roster changes. For this table specifically, find the session
+  where DM-run PCs became player-run, and reconstruct why.
+- `sessions` — session headers. Look for gaps in the calendar (where momentum
+  was lost) and clusters (where it was highest).
+
+Also read `state.md → ## DM Style Notes` — the calibration patterns already
+distilled during play. Some contract lines are already written; the question is
+whether they worked.
+
+### Reconciliation
+
+Put the interview answers beside the record and produce three lists:
+
+- **Confirmed** — memory and record agree. These become contract lines with the
+  highest confidence.
+- **Contradicted** — they disagree. Present each one plainly, with the citation,
+  and let the player respond. Do not adjudicate; record the outcome.
+- **Invisible** — in the record but absent from the interview. Things that
+  happened that the player never mentioned. Often the most revealing category:
+  a whole faction arc nobody remembers is a finding about what the table
+  actually cares about.
+
+Append all three to `omega/review.md`. If `predict` ran, unseal it here and
+compare predictions against what the finale actually was.
+
+---
+
+## Stage: `chronicle` *(optional)*
+
+Skip on request; it costs a generation pass and produces nothing the next
+campaign needs. It is for the player, not the process.
+
+A narrative retelling — acts and turning points, the NPCs who mattered and what
+became of them, the party's climb from 1 to 20, an epilogue for each character,
+and the DM's reveals: the plots they never uncovered, the NPC whose motive was
+never explained, what would have happened down the road not taken.
+
+Write it as story, not analysis. Read from `## Continuity Archive` and
+`session-log.md` for material. Output: `omega/chronicle.md`.
+
+---
+
+## Stage: `contract`
+
+See `reference/contract.md` for the full procedure, the dial mapping, and the
+test every candidate line must pass.
+
+In short: a **tiered** DM behaviour contract, sized by what the review actually
+found rather than a fixed count.
+
+- **Core** → `state.md → ## DM Style Notes` in the new campaign. Read at every
+  `/dm:dnd load`, overrides default DM instincts. Every line here costs context
+  for the life of the campaign, so it must earn its place.
+- **Situational** → `omega/contract.md`, consulted when a matching situation
+  arises rather than loaded every session.
+- **Dials** → `state.md → ## Session Flags`: `difficulty`, `spotlight`,
+  `pacing`. Set explicitly, with the review finding that justifies each.
+- **Experiments** → disputed items, written with a success condition and a
+  revert condition, resolved at `audit`.
+
+---
+
+## Stage: `spec`
+
+See `reference/setting.md`.
+
+Derive a taste profile from the review and the evidence — what the player
+*engaged with*, which is not what they would say if asked cold. Then pre-fill
+the constraint sheet, showing the proposed value and the finding behind it for
+every field. The player confirms or overrides each one.
+
+Never present a blank questionnaire. The work of this stage is doing the
+inference so the player only has to react to it.
+
+Fixed for this table, already decided:
+
+- Fresh world, no continuity with the old campaign.
+- Designed for a long epic — with act-boundary exits so a stop at session 40 is
+  an ending rather than an abandonment.
+- Start at level 1, accelerated through tier 1 (a level every session or two
+  until 5), so the zero-to-hero arc is real without the level-20-to-level-1
+  whiplash.
+
+Output: `omega/spec.md`.
+
+---
+
+## Stage: `world`
+
+Skeleton only — enough setting to make characters meaningful, and no more:
+theme, central conflict, the region play starts in, and three truths about the
+world. The rest is deliberately deferred until after `party`, so the world can
+be shaped around the characters that actually got made.
+
+The central conflict must be renewable: for a 100-session campaign it needs to
+escalate for years without resolving, and factions need somewhere to go. Test
+it by asking what this conflict looks like at session 80. If the answer is "the
+same, but bigger", it isn't renewable.
+
+---
+
+## Stage: `party`
+
+**Party architecture first.** How many PCs, who runs which, whether DM-run
+companions exist at all. This table ran 1+1 player / 2 DM and migrated to all
+four player-run — the review must have established why before this stage
+decides anything.
+
+Then characters: each PC needs a tie to the central conflict, a tie to at least
+one other PC, and something they want that the campaign can threaten.
+
+Mechanical creation hands off to `/dm:dnd character new` — this skill produces
+the narrative spec, not the stat block.
+
+---
+
+## Stage: `build`
+
+Write the new campaign's files directly from the dnd skill's own templates.
+
+**Do not run `/dm:dnd new`.** It auto-generates a world seed, factions and a
+three-act arc, which would overwrite or fight everything `world` and `party`
+produced.
+
+```bash
+python3 ${CLAUDE_SKILL_DIR}/scripts/omega_paths.py roots   # for templates_dir
+```
+
+Copy `state.md`, `world.md`, `npcs.md`, `session-log.md` from `templates/` into
+`<campaigns>/<new-campaign>/`, then populate:
+
+- `state.md` header: name, date, session count 0, and the **ruleset** line
+  (`**Ruleset:** 2014` or `2024`) — a campaign without it triggers a migration
+  prompt on first load.
+- `## DM Style Notes` — the core contract. **Add this section**; the blank
+  template does not include it, but `/dm:dnd load` reads it.
+- `## Session Flags` — the three dials.
+- `## Campaign Arc` — the dynamic-arc YAML block, filled from `world`.
+- `world.md → ## Adventure Nodes` — the opening 3–5 nodes as situations.
+- `characters/` — via `/dm:dnd character new`.
+
+Then verify: run `/dm:dnd load <new-campaign>` and confirm it reads the arc,
+the dials and the style notes without prompting for a migration or repair.
+A campaign that needs hand-fixing on first load was not built.
+
+---
+
+## Stage: `audit`
+
+Run at roughly session 5 and session 15 of the new campaign. This is what keeps
+the contract from being a theory written in the emotional wake of an ending.
+
+For each core contract line: cite what happened. Did it hold? Did it help?
+Promote lines that worked into permanent style notes, cut lines that produced
+nothing, and rewrite lines that were directionally right but badly phrased.
+
+For each experiment: check its success condition against the record and resolve
+it — adopt, revert, or extend once with a stated reason.
+
+Overcorrection is the expected failure. A contract written straight after a
+campaign ends over-weights how the *ending* felt: rules like "make everything
+deadly" read as wisdom on day one and as a mistake by session 12. Be willing to
+cut your own lines.
