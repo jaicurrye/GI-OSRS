@@ -17,7 +17,8 @@ Jij regelde het huis, het eten en het programma. Jij hebt de sleutels van bijna 
 - **20:45–21:15:** alleen boven.
 - **21:30–22:10:** met Milan in de serre.
 - **22:15–22:45:** stiekem roken met Bram bij de oranjerie.
-- **22:45–23:11:** alleen op je kamer boven.
+- **22:50:** je loopt samen met Bram over het grindpad terug naar het huis. In de hal gaat hij richting keuken en jij de trap op.
+- **22:53–23:11:** alleen op je kamer boven.
 - **23:11–23:14:** je staat bij je kamerdeur op de overloop en praat een paar minuten met Milan, die op weg is naar de badkamer. Jullie hebben het over de wijnkast en over hoe stil Kees die avond was.
 - Rond **23:15** bel je Kees vanuit je kamer om naar de sleutel van de wijnkast te vragen.
 - "Kees" neemt vrijwel meteen op en zegt alleen: **"Niet nu, Fleur. Morgen."** Daarna wordt opgehangen.
@@ -26,7 +27,7 @@ Jij regelde het huis, het eten en het programma. Jij hebt de sleutels van bijna 
 - **00:50:** jij en Bram gaan samen kijken waar Kees blijft en vinden hem in de bibliotheek.
 
 ## Wat jij weet
-- Bram was van **22:15 tot 22:45** bij jou bij de oranjerie.
+- Bram was van **22:15 tot 22:45** bij jou bij de oranjerie; om **22:50** liepen jullie samen terug naar het huis.
 - Rond **22:35** wees Bram je erop dat Sanne de bibliotheek in ging; zelf zag je alleen haar rug.
 - Milan was van **21:30 tot 22:10** bij jou in de serre.
 - Van **23:11 tot 23:14** stond je onafgebroken met Milan te praten op de overloop. Jullie waren toen allebei boven.

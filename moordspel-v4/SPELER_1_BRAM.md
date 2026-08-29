@@ -17,7 +17,7 @@ Rond **21:05** heb je hem in de serre gesmeekt nog een week te wachten. Het gesp
 - **21:00–21:15:** ruzie met Kees in de serre.
 - **21:35–22:05:** alleen op je kamer.
 - **22:15–22:45:** bij de oranjerie met Fleur. Jullie roken.
-- **22:50:** je loopt over het grindpad terug naar het huis en gaat via de hal naar binnen.
+- **22:50:** je loopt samen met Fleur over het grindpad terug naar het huis. In de hal gaat zij de trap op en loop jij door naar de keuken.
 - **22:55–23:20:** je bent met Noor en Lucas in de keuken. Noor en Lucas waren daar al toen jij binnenkwam. Eerst praat je mee; daarna helpen jullie samen met eten en opruimen.
 - **23:20–23:45:** je zit met Lucas in de salon.
 - Rond **23:25** komen Milan en Iris de salon binnen en blijven daar bij jullie zitten.
@@ -26,6 +26,7 @@ Rond **21:05** heb je hem in de serre gesmeekt nog een week te wachten. Het gesp
 
 ## Wat jij weet
 - Fleur rookt stiekem. Haar partner denkt dat ze al bijna een jaar gestopt is.
+- Om **22:50** liep je samen met Fleur terug naar het huis; in de hal ging zij naar boven.
 - Fleur liet bij de oranjerie iets vallen over "dat huisje" en "negenduizend". Ze wilde er meteen niet verder over praten.
 - Rond **22:35** zag je vanaf het grindpad bij de oranjerie, door het tuinraam, Sanne kort de bibliotheek binnengaan en enkele minuten later weer vertrekken.
 - Rond **22:52**, toen je door de hal naar de keuken liep, hoorde je Kees vanuit de bibliotheek hard zeggen: "Dat meen je niet."
