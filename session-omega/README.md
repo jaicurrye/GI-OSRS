@@ -28,7 +28,7 @@ Run in order; each is independently invocable and resumable.
 | `predict` | **Before the finale.** Seals your predictions, hopes, and appetite for what's next. |
 | `review` | Cold interview, no file reads, so your answers aren't anchored. |
 | `evidence` | Targeted extraction, then reconciles the record against memory. |
-| `tooling` | Audits the plugin itself: health, feature usage, failures, config. |
+| `tooling` | Audits the plugin itself: health, usage, failures, config, extensions. |
 | `chronicle` | *Optional.* Narrative keepsake, epilogues, DM reveals. |
 | `contract` | Tiered DM behaviour contract plus the three table dials. |
 | `spec` | Taste profile → a constraint sheet pre-filled with reasoning. |
@@ -67,6 +67,14 @@ It also infers which optional systems were ever used, because "the DM kept
 forgetting things" plus an uninitialized relationship graph is a configuration
 failure, not a model failure, and it should be fixed with a flag rather than
 with a permanent contract line.
+
+**Anything added has to be reachable.** `/dm:dnd load` reads a fixed set of
+files and reaches everything else through a pointer — there is no scan of the
+campaign directory. A markdown file dropped in beside `state.md` is not lightly
+used, it is unreachable, with no error and no signal. So `tooling` plans a
+placement for every piece of custom content (on the load path, pointed at from
+it, deliberately inert, or imported as a lazy corpus) and `build` checks each
+file it writes against that rule.
 
 **`build` never runs `/dm:dnd new`**, which would auto-generate a world and arc
 over the top of the one you designed. It writes the files from the dnd skill's

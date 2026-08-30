@@ -75,6 +75,57 @@ also consume a core contract line. Contract lines are expensive and permanent;
 a flag is free. Where the tooling audit can fix something, take it out of the
 contract.
 
+## Anything you add must be reachable
+
+The same fact that makes the load path expensive also makes it the only thing
+that exists. `/dm:dnd load` reads a fixed set of files and reaches everything
+else through a pointer. There is no scan of the campaign directory, so a file
+nobody points at is not "lightly used" — it is unreachable, silently, with no
+error and no signal.
+
+This is the failure mode most likely to waste real effort: a player writes a
+house-rules document or a lore bible, puts it in the campaign directory
+alongside the files that *are* read, and reasonably assumes the DM has it. It
+never gets opened, and the absence looks exactly like the DM ignoring the rules.
+
+Three legitimate placements, and nothing else:
+
+| Placement | Use for |
+|---|---|
+| **On the load path** | Anything needed every session. Costs tokens every session, so it must be short — this is where the core contract lines go. |
+| **Pointed at** | Anything needed sometimes. A line on the load path names the file and says when to read it; the situational contract tier works this way. Cheap and unbounded in size. |
+| **Deliberately inert** | Records for the player, not the DM — `review.md`, `chronicle.md`. Documented as inert so nobody later assumes the DM has read them. |
+
+Long-form material has a fourth option: `/dm:dnd import` builds a lazy corpus,
+one file per chapter, indexed and never loaded at session start. It works for
+any long-form text, not just published modules. A substantial written setting
+should be imported, not pasted into `world.md` — pasting it puts a book on the
+load path permanently.
+
+## Extension points worth checking
+
+- **Autosave Stop hook** (`install_autosave_hook.py`) — optional, prompts the
+  continuity flush on a turn cadence. If `review` reported dropped details or
+  continuity loss and this was never installed, it is a fix that costs nothing
+  and spends no contract line.
+- **Display companion** — installed versus actually used; TLS only matters on
+  an untrusted network.
+- **Supplemental dataset** (`/dm:dnd data sync`) — custom monsters, items and
+  spells belong here rather than in prose, where they are searchable and do not
+  sit on the load path.
+- **Character portability** (`/dm:dnd character import`) — characters can move
+  between campaigns, which matters if anything from the old party is wanted.
+
+## What the player kept outside the system
+
+The most useful question in this part: what did you write down somewhere else?
+
+A player maintaining notes in a separate document, a spreadsheet, or their head
+was compensating for something the campaign would not hold. Find out what it was
+and give it a home under the placement rules above. That habit disappearing is a
+larger improvement than most contract lines, because it means the system finally
+holds what the player already decided was worth keeping.
+
 ## Dating the loss of trust
 
 The one question in this stage that no script can answer: *when did you stop

@@ -282,6 +282,65 @@ directly. Every recommendation names the finding behind it.
   appealing. A companion that was started twice in a hundred sessions is not
   part of this table's setup.
 
+### 5. Extensions and custom content
+
+What is installed, what is worth installing, and what custom material the new
+campaign should carry.
+
+**The load-path rule, before anything else.** The dnd skill reads a fixed set of
+files — `state.md`, `world.md`, `npcs.md`, `session-log.md`, `arc.md`,
+`characters/` — and reads anything else only when something on the load path
+points at it. A markdown file dropped into the campaign directory is therefore
+*never read*, and gives no signal that it isn't being used. A `house-rules.md`
+sitting next to `state.md` can be invisible for a hundred sessions.
+
+So every file this process creates must satisfy one of three conditions, and
+`build` enforces it:
+
+1. It is one of the files `/dm:dnd load` already reads, or
+2. Something on the load path points at it, the way the situational contract
+   tier is reached through a pointer line in `## DM Style Notes`, or
+3. It is deliberately inert — a record for the player, like `omega/review.md`,
+   and is documented as such.
+
+A file that satisfies none of these should not be written. If custom content
+cannot be given a pointer, it belongs inside a file that is already read.
+
+**Check what is installed.**
+
+- **The autosave Stop hook** (`install_autosave_hook.py`) — optional, and
+  prompts the continuity flush on a turn cadence as a backstop to the
+  scene-boundary habit. Ask whether it was installed. If continuity loss or
+  dropped details came up in `review` and the hook was never installed, that is
+  a concrete fix and it costs no contract line.
+- **The display companion** — installed, and actually used? Its TLS setup only
+  matters on an untrusted network.
+- **Supplemental data** (`/dm:dnd data sync`, the `data/` dataset) — whether
+  custom monsters, items or spells were ever added, and whether the ruleset
+  dataset is current.
+
+**Custom content worth carrying forward.** Ask what the player wrote, wanted to
+write, or kept outside the system entirely — house rules, a lore document,
+custom monsters, a list of names, notes they maintained by hand. Anything kept
+in a separate document *because the campaign wouldn't hold it* is the important
+answer here: it means the player was compensating for a gap, and the compaction
+of that habit into the new campaign is a real improvement.
+
+For each item, decide where it lives under the load-path rule above. Most house
+rules belong in the situational contract file, reached by the pointer that is
+already there. Custom monsters and items belong in the supplemental dataset, not
+in prose. A lore bible belongs in `world.md`, or as a corpus if it is long.
+
+**Long-form material.** `/dm:dnd import` builds a lazy corpus — one file per
+chapter under `source/`, indexed, and never loaded at session start. That
+machinery works for any long-form text, not only published modules. If the
+player has a substantial written setting they want the DM to know, importing it
+is the right shape; pasting it into `world.md` puts it on the load path
+permanently and is not.
+
+Record the outcome as an extensions block alongside the config block, naming for
+each item what it is, where it will live, and how it gets read.
+
 ---
 
 ## Stage: `chronicle` *(optional)*
@@ -412,6 +471,14 @@ Copy `state.md`, `world.md`, `npcs.md`, `session-log.md` from `templates/` into
   relationship graph if the last campaign never had one, and write the archive
   compression cadence into `## DM Notes` so it happens without being
   remembered.
+- The `tooling` extensions block: install what it calls for, and place each
+  piece of custom content where that block assigned it.
+
+**Before finishing, check every file written against the load-path rule.** For
+each one, name which of the three conditions it satisfies — read directly,
+pointed at from the load path, or deliberately inert. A file satisfying none of
+them is invisible to the DM and must be moved into a file that is read, given a
+pointer, or not written at all.
 
 Then verify: run `/dm:dnd load <new-campaign>` and confirm it reads the arc,
 the dials and the style notes without prompting for a migration or repair.

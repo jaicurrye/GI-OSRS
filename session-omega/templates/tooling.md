@@ -61,3 +61,22 @@ autorun:        # use | skip
 
 | Setting | Value | Finding |
 |---|---|---|
+
+## Extensions and custom content
+
+**Installed now:**
+
+| Extension | Installed | Used | Keep for campaign 2 |
+|---|---|---|---|
+| Autosave Stop hook | | | |
+| Display companion | | | |
+| Supplemental dataset | | | |
+
+**Kept outside the system** — *what the player wrote down elsewhere, and why:*
+
+**Placement plan** — *every item gets one of: on the load path, pointed at from
+it, deliberately inert, or imported as a lazy corpus. Anything that fits none of
+these is not written.*
+
+| Item | Placement | How it gets read |
+|---|---|---|
