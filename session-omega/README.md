@@ -25,7 +25,7 @@ Run in order; each is independently invocable and resumable.
 
 | Stage | |
 |---|---|
-| `predict` | **Before the finale.** Seals your predictions and hopes. |
+| `predict` | **Before the finale.** Seals your predictions, hopes, and appetite for what's next. |
 | `review` | Cold interview, no file reads, so your answers aren't anchored. |
 | `evidence` | Targeted extraction, then reconciles the record against memory. |
 | `tooling` | Audits the plugin itself: health, feature usage, failures, config. |

@@ -24,6 +24,19 @@ Write the profile as a short paragraph, not a scorecard, and show it to the
 player before the constraint sheet. It is a claim about them; they should get to
 argue with it first.
 
+**Then, and only then, unseal `predict` question 5** — what the player said they
+were drifting toward and sick of, recorded before the finale and before any
+retrospection. The ordering is load-bearing: a profile written after reading the
+stated appetite is no longer independent of it, and the comparison collapses.
+
+Treat the two as equal witnesses. Agreement makes the constraint sheet nearly
+automatic. Disagreement is presented plainly and left to the player — a player
+sick of the thing the evidence says they loved is not making an error, and
+neither is a player drawn to something they never once chose when it was
+available. Recorded appetite and revealed engagement are different facts about
+a person, and which one should govern the next hundred sessions is not an
+inference this stage gets to make.
+
 ## The constraint sheet
 
 Every field gets a **proposed value** and the **finding behind it**, one line

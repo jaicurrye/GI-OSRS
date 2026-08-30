@@ -1,8 +1,24 @@
 # Campaign Spec — <new campaign>
 
 ## Taste profile
-> *A paragraph, inferred from engagement rather than stated preference. Shown to
-> the player before the constraint sheet so they can argue with it.*
+> *A paragraph, inferred from engagement rather than stated preference. Written
+> BEFORE question 5 is unsealed, and shown to the player before the constraint
+> sheet so they can argue with it.*
+
+## Sealed appetite — `predict` question 5
+> *Unsealed here, after the profile is written.*
+
+**Drifting toward:**
+
+**Sick of:**
+
+| | Profile says | Appetite says | Player's call |
+|---|---|---|---|
+| Agreements | | | |
+| Disagreements | | | |
+
+*Disagreements are not resolved in favour of the evidence. Both readings are
+real; the player decides.*
 
 ## Constraint sheet
 

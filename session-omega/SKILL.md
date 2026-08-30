@@ -71,17 +71,30 @@ Run **before the final session**, and only then. If the finale has already
 happened, say so and skip — a prediction written after the fact is worthless,
 and pretending otherwise poisons the comparison in `review`.
 
-Ask four questions, record verbatim, and do not discuss the answers:
+Ask five questions, record verbatim, and do not discuss the answers:
 
 1. How do you think this campaign ends?
 2. How do you *want* it to end — the same thing, or something you don't expect
    to get?
 3. Which thread are you most afraid will be left dangling?
 4. What would make the finale a disappointment, specifically?
+5. When you imagine the next campaign, what image or premise do you keep
+   drifting toward — and what are you most sick of?
+
+Tell the player to answer fast and slightly carelessly. Over-deliberation
+produces what a sophisticated player thinks they *should* predict, which is
+worth nothing; a worse-considered honest answer is the useful one.
+
+Questions 1–4 unseal at `evidence`. **Question 5 unseals at `spec`**, not
+earlier — it is a snapshot of unprompted creative appetite taken before a
+hundred sessions of retrospection reframe it, and reading it during the review
+would let it steer the very findings it is supposed to be tested against.
 
 Then stop. Do not offer opinions on the predictions, do not foreshadow, and do
-not let the answers influence how the finale is run. Tell the player the answers
-are sealed until `review`.
+not let the answers influence how the finale is run. This last rule is a
+constraint on the DM more than the player: having just read what the player
+hopes for and fears, running the finale straight becomes hard, and delivering
+the hoped-for thing would write the answer key and then grade against it.
 
 ---
 
@@ -317,6 +330,16 @@ every field. The player confirms or overrides each one.
 
 Never present a blank questionnaire. The work of this stage is doing the
 inference so the player only has to react to it.
+
+**Unseal question 5 from `predict` here**, and only after the taste profile is
+written — the profile must be derived from evidence before the player's stated
+appetite is allowed in the room. Then compare the two.
+
+Where they agree, the constraint sheet writes itself. Where they disagree, say
+so plainly and let the player decide; do not quietly resolve it in favour of the
+evidence. Players are frequently sick of the thing they in fact loved, and drawn
+to a thing they never once chose when it was available — both readings are real,
+and which one should win is the player's call, not an inference.
 
 Fixed for this table, already decided:
 

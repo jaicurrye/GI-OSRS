@@ -4,10 +4,22 @@
 **Reviewed:** <date>
 
 ## Sealed predictions
-*(from the `predict` stage, unsealed at `evidence` — leave out if not run)*
+*(questions 1–4 from `predict`, unsealed at `evidence`. Question 5 stays sealed
+until `spec` — do not read it here. Leave this section out if `predict` was
+not run.)*
 
 | Question | Predicted | What actually happened |
 |---|---|---|
+| How it ends | | |
+| How I wanted it to end | | |
+| Thread I feared losing | | |
+| What would disappoint me | | |
+
+**Want-vs-expect gap:** *where 1 and 2 diverge — an appetite the campaign was
+not feeding. Carries to `spec`.*
+
+**Called disappointment:** *if the named failure mode actually occurred, it
+carries unusual authority in `contract` — it was predicted, not remembered.*
 
 ## The one sentence
 > *What the player said the campaign was about.*
