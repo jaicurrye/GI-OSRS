@@ -31,7 +31,7 @@ try:
 except Exception:
     pass
 
-STAGES = ["predict", "review", "evidence", "chronicle", "contract",
+STAGES = ["predict", "review", "evidence", "tooling", "chronicle", "contract",
           "spec", "world", "party", "build", "audit"]
 STATUSES = ["pending", "active", "done", "skipped"]
 

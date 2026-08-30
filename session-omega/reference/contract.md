@@ -27,6 +27,12 @@ A candidate line is only a contract line if it passes all four:
    buys nothing. Only write a line where this campaign proved the default
    insufficient, or where the player wants the opposite of the default.
 
+**A fifth test, once `tooling` has run: is this fixable with configuration?**
+A complaint about forgotten details, when the campaign never initialized the
+relationship graph and never used pinned facts, is a configuration failure
+wearing the costume of a DM failure. Fix it with a flag — flags are free and
+contract lines are permanent — and delete the candidate.
+
 Rule 4 removes more candidates than the other three combined. Check the dnd
 skill's `SKILL.md` Standards before writing anything.
 

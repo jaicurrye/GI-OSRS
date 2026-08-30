@@ -26,6 +26,7 @@ and the player decides when to continue.
 | `predict` | **Before the finale.** Capture predictions and hopes, sealed. |
 | `review` | Cold interview. No file reads. Unanchored answers. |
 | `evidence` | Targeted extraction, then reconcile record against memory. |
+| `tooling` | Audit the plugin itself: health, usage, failures, config. |
 | `chronicle` | *Optional.* Narrative keepsake, epilogues, DM reveals. |
 | `contract` | Tiered DM behaviour contract + the three table dials. |
 | `spec` | Taste profile → pre-filled constraint sheet the player overrides. |
@@ -182,6 +183,94 @@ compare predictions against what the finale actually was.
 
 ---
 
+## Stage: `tooling`
+
+A different axis from everything else in Session Omega. `review` and `contract`
+ask whether the DM played well; this asks whether the *machinery* served the
+table. After a hundred sessions a campaign accumulates real operational debt,
+and almost all of it is invisible during play — it shows up as sessions that
+start slowly, continuity that quietly degrades, and features that were there the
+whole time and never got used.
+
+```bash
+python3 ${CLAUDE_SKILL_DIR}/scripts/omega_health.py all <campaign>
+```
+
+Read `reference/tooling.md` for what each number means and the fixes that
+follow from it. Output: `omega/tooling.md`. Its config section feeds `build`.
+
+The audit has four parts. Run all four; they inform each other.
+
+### 1. Health and efficiency — the numbers
+
+The single distinction that matters: **`state.md` is read at every
+`/dm:dnd load`; everything else is read on demand.** A large `session-log.md`
+costs nothing. A large `state.md` is a tax paid at the start of every session
+for the life of the campaign, and it is the most common thing wrong with a long
+campaign.
+
+`omega_health.py all` reports per-section token estimates inside `state.md` and
+flags the known patterns. The usual culprit is `## Continuity Archive` growing
+without ever being compressed, which turns the load path into a transcript.
+
+### 2. Feature usage — what the campaign paid for and never used
+
+The script infers usage from artifacts: whether the relationship graph was ever
+initialized, whether pinned facts exist, whether Faction Moves was ever written
+to, which dials were set, whether Live State Flags was maintained.
+
+Two different findings live here, and they need separating:
+
+- **Unused because unwanted** — fine. Note it and move on.
+- **Unused because unknown** — the player didn't know the feature existed, or
+  forgot it after session three. This is the valuable category, and the fix is
+  usually a line in the new campaign's setup rather than a habit the player has
+  to remember.
+
+Ask the player directly about anything that came back unused: did you know about
+this, and would you have wanted it?
+
+### 3. Failures and friction — what actually broke
+
+Interview, not measurement. The record rarely contains its own failures.
+
+- When did you have to correct the DM about something that had happened?
+- Did you ever hand-edit a campaign file? What were you fixing?
+- Did anything crash, hang, or need restarting? The display companion, autorun?
+- Which commands did you try once and abandon? What went wrong?
+- Was there a point where you stopped trusting the DM to remember, and started
+  keeping your own notes? When?
+
+That last one is the most important question in this stage. It dates the moment
+the tooling stopped being trusted, and everything before that date is a working
+system while everything after is a workaround.
+
+### 4. Configuration for the new campaign
+
+Turn the findings into settings, written as a block that `build` consumes
+directly. Every recommendation names the finding behind it.
+
+- **Ruleset** — 2014 or 2024, set in the `state.md` header so first load doesn't
+  prompt for a migration.
+- **Dials** — `difficulty`, `spotlight`, `pacing`. These come from `contract`,
+  but flag any that went unset for the whole last campaign: running on defaults
+  for a hundred sessions is a finding, not a neutral choice.
+- **`roll_mode`** — `players` or `auto`, from what the last campaign actually
+  felt like rather than what was chosen at the start.
+- **`autosave`** — on unless there is a specific reason. Off is how continuity
+  gets lost to compaction.
+- **Graph from session one.** If the last campaign never initialized the
+  relationship graph, initialize the new one at `build`. It is the main defence
+  against continuity loss on exactly the kind of campaign this table runs.
+- **Archive discipline.** If `## Continuity Archive` bloated the load path, set
+  a compression cadence now — a pass every ~20 sessions — and write it into the
+  new campaign's DM Notes so it actually happens.
+- **Display and autorun** — recommend from real usage, not from what sounds
+  appealing. A companion that was started twice in a hundred sessions is not
+  part of this table's setup.
+
+---
+
 ## Stage: `chronicle` *(optional)*
 
 Skip on request; it costs a generation pass and produces nothing the next
@@ -291,10 +380,15 @@ Copy `state.md`, `world.md`, `npcs.md`, `session-log.md` from `templates/` into
   prompt on first load.
 - `## DM Style Notes` — the core contract. **Add this section**; the blank
   template does not include it, but `/dm:dnd load` reads it.
-- `## Session Flags` — the three dials.
+- `## Session Flags` — the three dials, plus `roll_mode` and `autosave` from
+  the `tooling` config block.
 - `## Campaign Arc` — the dynamic-arc YAML block, filled from `world`.
 - `world.md → ## Adventure Nodes` — the opening 3–5 nodes as situations.
 - `characters/` — via `/dm:dnd character new`.
+- Anything else the `tooling` config block calls for: initialize the
+  relationship graph if the last campaign never had one, and write the archive
+  compression cadence into `## DM Notes` so it happens without being
+  remembered.
 
 Then verify: run `/dm:dnd load <new-campaign>` and confirm it reads the arc,
 the dials and the style notes without prompting for a migration or repair.
@@ -313,6 +407,12 @@ nothing, and rewrite lines that were directionally right but badly phrased.
 
 For each experiment: check its success condition against the record and resolve
 it — adopt, revert, or extend once with a stated reason.
+
+Re-run `omega_health.py all <new-campaign>` here too. Fifteen sessions is early
+enough that a bloat pattern is cheap to correct and late enough to be visible —
+if `state.md` is already growing into the load path, the archive cadence from
+`tooling` is not being honoured, and that is worth catching now rather than at
+session ninety.
 
 Overcorrection is the expected failure. A contract written straight after a
 campaign ends over-weights how the *ending* felt: rules like "make everything
