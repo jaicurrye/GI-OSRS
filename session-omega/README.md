@@ -44,6 +44,10 @@ from it — but only from cited record, and you always get the last word.
 Deadlocks are logged as disputes and become labelled experiments with revert
 conditions, not silently-adopted rules.
 
+**Evidence searches the archive.** `/dm:dnd save` keeps only the two most recent
+sessions in `session-log.md`, so a search that skips `session-log-archive.md`
+finds about 2% of a long campaign.
+
 **Evidence is targeted, never a full sweep.** A hundred-session log doesn't fit
 in a context window, so extraction pulls the parts that carry signal: the
 `### DM Calibration` blocks `/dm:dnd end` has been writing after every session,
@@ -58,11 +62,13 @@ core line is loaded for the life of the campaign, so the contract is a budget
 rather than a wish list, and a line that merely restates one of the skill's
 fourteen Standards is rejected.
 
-**The tooling audit measures rather than guesses.** `state.md` is read at every
-load and everything else is read on demand, so a large session log costs nothing
-and a large `state.md` is a tax paid every session forever. `omega_health.py`
-reports per-section token estimates inside the load path and flags the known
-long-campaign patterns — chiefly a Continuity Archive that was never compressed.
+**The tooling audit measures rather than guesses.** `/dm:dnd load` reads
+`state.md`, `world.md` in full, `npcs.md` index rows and every character sheet;
+the session log, its archive and `npcs-full.md` are read on demand. So a large
+log costs nothing, while four level-20 character sheets are a real recurring
+cost most people never see. `omega_health.py` reports the per-session load cost,
+breaks `state.md` down by section, and flags the known long-campaign patterns —
+chiefly a Continuity Archive that was never compressed.
 It also infers which optional systems were ever used, because "the DM kept
 forgetting things" plus an uninitialized relationship graph is a configuration
 failure, not a model failure, and it should be fixed with a flag rather than

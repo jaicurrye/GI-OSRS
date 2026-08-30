@@ -51,11 +51,15 @@ Prefer the specific to the general. "Kill a PC if the dice say so" beats "raise
 the stakes". Prefer prohibitions where the failure was the DM doing something,
 and obligations where the failure was the DM omitting something.
 
-**Situational** → `omega/contract.md`, plus a single pointer line in the style
-notes so the DM knows it exists:
+**Situational** → drafted in `omega/contract.md`, copied by `build` into the new
+campaign as `dm-contract.md`, plus a single pointer line in the style notes:
 
-> Situational ruleset in `omega/contract.md` — consult at combat start, at
+> Situational ruleset in `dm-contract.md` — consult at combat start, at
 > downtime, and when a faction acts.
+
+The path matters. `omega/` belongs to the campaign being *reviewed*; a pointer
+written into the *new* campaign's `state.md` resolves against the new campaign's
+directory, where no `omega/` exists. Point at a file that is actually there.
 
 Organise it by trigger, not by topic, so the DM knows *when* to read it. Each
 entry carries its finding and its citation.

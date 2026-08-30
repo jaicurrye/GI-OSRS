@@ -4,21 +4,45 @@
 `state_sections`, `features`, and `findings`. This is what they mean and what
 follows from each.
 
-## The load path is the whole game
+## The five parts
 
-The dnd skill is explicitly token-budgeted, and its central design decision is
-that **`state.md` is read at every `/dm:dnd load` and almost nothing else is.**
-NPC entries load lazily. `session-log.md` is read only on an explicit recap.
-`arc.md` is read only when advancing chapters.
+1. **Health and efficiency** — the numbers below.
+2. **Feature usage** — what the campaign paid for and never used.
+3. **Failures and friction** — what broke. Interview, not measurement.
+4. **Configuration for the new campaign** — findings turned into settings.
+5. **Extensions and custom content** — what to install, and where new files live.
 
-So:
+Work all five. Parts 4 and 5 are consumed by `build`.
 
-- A 40,000-token `session-log.md` costs **nothing**. It is doing its job.
-- A 12,000-token `state.md` costs 12,000 tokens **every session, forever**, and
-  is the first thing to fix.
+## What the load path actually is
 
-The `load_path` flag in the `files` block marks this. Do not recommend
-compressing a cold file to save tokens; it saves nothing and loses history.
+`/dm:dnd load` reads, every session:
+
+| File | How |
+|---|---|
+| `state.md` | in full |
+| `world.md` | **in full** — World Foundations, Three Truths, factions |
+| `npcs.md` | index rows only; full entries come from `npcs-full.md` on demand |
+| `characters/*.md` | **all of them, in full** |
+
+And explicitly does *not* read at load: `session-log.md`, `session-log-archive.md`,
+`npcs-full.md`, `world-nodes.md`, `arc.md`, `source/*.md`. Those are read on
+demand and can be arbitrarily large for free.
+
+So the per-session cost is `state.md + world.md + every character sheet`, which
+`omega_health.py` reports as `load_path.per_session_est_tokens`. That single
+number is the headline of this part.
+
+Two consequences that are easy to get backwards:
+
+- **A large `session-log.md` or archive costs nothing.** It is doing its job.
+  Never recommend compressing it to save tokens.
+- **Character sheets are a real recurring cost, and they grow with level.** A
+  party of four level-20 sheets can exceed everything else on the load path
+  combined. This is a genuine finding for a party that grew mid-campaign, and
+  it is invisible unless measured.
+- **A `world.md` full of template placeholders is still read in full**, so a
+  thinly-built world costs the same as a rich one and returns nothing.
 
 ## Section sizes
 
@@ -50,7 +74,7 @@ What each absence means:
 
 | Absent | Consequence |
 |---|---|
-| `graph.json` | No relationship graph. On a 100-session campaign this is the main defence against continuity loss under context compaction — the thing most likely behind "the DM forgot who that was". |
+| `graph.json` | No relationship graph. On a 100-session campaign this is the main defence against continuity loss under context compaction — the thing most likely behind "the DM forgot who that was". Note that upstream now treats graph init as a hard requirement at load, so an old campaign missing it will have been running without it, while a new one gets it on first load. |
 | Pinned facts | The cheapest continuity tool in the skill went unused. Promises made, names that matter, running jokes — all left to ordinary memory. |
 | Faction Moves | Standard 11 left no trace, so the world probably did not visibly move without the player. Cross-check against the review's "did the world feel alive?" answer. |
 | Live State Flags | The compaction-survival mechanism was not maintained. Cross-check against reported continuity failures. |
@@ -96,20 +120,28 @@ Three legitimate placements, and nothing else:
 | **Pointed at** | Anything needed sometimes. A line on the load path names the file and says when to read it; the situational contract tier works this way. Cheap and unbounded in size. |
 | **Deliberately inert** | Records for the player, not the DM — `review.md`, `chronicle.md`. Documented as inert so nobody later assumes the DM has read them. |
 
-Long-form material has a fourth option: `/dm:dnd import` builds a lazy corpus,
-one file per chapter, indexed and never loaded at session start. It works for
-any long-form text, not just published modules. A substantial written setting
-should be imported, not pasted into `world.md` — pasting it puts a book on the
-load path permanently.
+Long-form material needs care. `/dm:dnd import` builds exactly the right
+structure — a lazy per-chapter corpus under `source/`, indexed, never loaded at
+session start — but it **creates a campaign from the source file**: it writes
+`state.md`, `world.md`, `npcs.md`, `arc.md` and sets `type: structured` in the
+arc. Run against a campaign `build` has already made, it destroys the DM Style
+Notes, the dials and the dynamic arc.
+
+So: if the player has a substantial written setting, **import it first and build
+into the campaign it creates**, or import to a scratch campaign and copy the
+`source/` tree and its index across by hand. Never run it over a finished build.
+And never paste a long document into `world.md` — that puts a book on the load
+path permanently.
 
 ## Extension points worth checking
 
-- **Autosave Stop hook** (`install_autosave_hook.py`) — optional, prompts the
-  continuity flush on a turn cadence. If `review` reported dropped details or
-  continuity loss and this was never installed, it is a fix that costs nothing
-  and spends no contract line.
-- **Display companion** — installed versus actually used; TLS only matters on
-  an untrusted network.
+- **Autosave Stop hook** — do not ask; check.
+  `python3 <dnd-skill>/scripts/install_autosave_hook.py --status` answers it
+  deterministically. If `review` reported dropped details or continuity loss and
+  the hook was never installed, that is a fix costing no contract line.
+- **Display companion** — usage is **not detectable from disk**: `paths.py`
+  creates the runtime directory on every load whether or not the companion ran.
+  Ask the player. TLS only matters on an untrusted network.
 - **Supplemental dataset** (`/dm:dnd data sync`) — custom monsters, items and
   spells belong here rather than in prose, where they are searchable and do not
   sit on the load path.

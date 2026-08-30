@@ -37,17 +37,21 @@ and the player decides when to continue.
 
 ## Setup — do this first, every stage
 
+`${CLAUDE_SKILL_DIR}` must expand to this skill's directory. If a command fails
+with a path starting `/scripts/`, the variable is unset — substitute the real
+path before continuing rather than retrying.
+
 ```bash
 python3 ${CLAUDE_SKILL_DIR}/scripts/omega_paths.py roots
 python3 ${CLAUDE_SKILL_DIR}/scripts/omega_paths.py campaigns
+# first run only — `status` exits with an error until this exists:
+python3 ${CLAUDE_SKILL_DIR}/scripts/omega_state.py init <campaign> --new-campaign <new>
 python3 ${CLAUDE_SKILL_DIR}/scripts/omega_state.py status <campaign>
 ```
 
 `roots` reports the data root, and whether the dnd skill's `templates/` were
 found — `build` needs them. If `dnd_skill_root` is null, ask the player where
 the dnd skill is installed rather than guessing or writing files from memory.
-
-If no progress file exists: `omega_state.py init <campaign> [--new-campaign N]`.
 
 **Record every answer as it is given**, not at the end of a stage:
 
@@ -60,8 +64,43 @@ ANS
 Verbatim. Do not summarise the player into their own review — a paraphrase made
 at the moment of writing is a paraphrase you will later treat as evidence.
 
-Outputs land in `<campaigns>/<campaign>/omega/`: `progress.json`, `review.md`,
-`contract.md`, `spec.md`, `chronicle.md`.
+**Close every stage explicitly.** Recording answers moves a stage to `active`;
+nothing moves it to `done` on its own, and `status.next` keeps returning the
+first unfinished stage until you do:
+
+```bash
+python3 ${CLAUDE_SKILL_DIR}/scripts/omega_state.py set <campaign> <stage> done
+```
+
+Read answers back with `dump <campaign> --stage <stage>`. Keys beginning
+`sealed_` are withheld from `dump` and need `--key` to read — that is how
+`predict` question 5 stays sealed until `spec`.
+
+Outputs land in `<campaigns>/<campaign>/omega/` — `progress.json`, `review.md`,
+`tooling.md`, `contract.md`, `spec.md`, `chronicle.md` — where `<campaign>` is
+the campaign being reviewed. Structure each from the matching file in this
+skill's `templates/`. The one file that must not stay there is the situational
+contract: `build` copies it into the new campaign as `dm-contract.md`, because
+that is where the pointer in `state.md` will look for it.
+
+---
+
+## Before you start
+
+Two things, once, before `review`:
+
+1. **Close the old campaign properly.** `/dm:dnd save` then `/dm:dnd end` on the
+   finale. That is what writes the final `### DM Calibration` block, the last
+   `## Recent Events`, and the closing `## Continuity Archive` entries — all of
+   which `evidence` then reads. Reviewing before the campaign is ended reviews
+   an incomplete record.
+2. **Back up the campaign directory.** `cp -r <campaigns>/<campaign>
+   <campaigns>/<campaign>.omega-backup-<date>`. Nothing here rewrites the old
+   campaign, but a hundred sessions deserves a copy before a process starts
+   touching the directory at all.
+
+And name the new campaign before `build` — `omega_state.py init` takes
+`--new-campaign`, and `build` will refuse to overwrite an existing directory.
 
 ---
 
@@ -85,6 +124,12 @@ Tell the player to answer fast and slightly carelessly. Over-deliberation
 produces what a sophisticated player thinks they *should* predict, which is
 worth nothing; a worse-considered honest answer is the useful one.
 
+Record questions 1–4 under keys `q1`…`q4`, and **question 5 under the key
+`sealed_q5_appetite`** — the `sealed_` prefix is what hides it from
+`dump --stage predict`, so the seal is enforced by the tool rather than by
+remembering. Read it at `spec` with
+`dump <campaign> --stage predict --key sealed_q5_appetite`.
+
 Questions 1–4 unseal at `evidence`. **Question 5 unseals at `spec`**, not
 earlier — it is a snapshot of unprompted creative appetite taken before a
 hundred sessions of retrospection reframe it, and reading it during the review
@@ -95,6 +140,8 @@ not let the answers influence how the finale is run. This last rule is a
 constraint on the DM more than the player: having just read what the player
 hopes for and fears, running the finale straight becomes hard, and delivering
 the hoped-for thing would write the answer key and then grade against it.
+
+**Done when:** five answers recorded (q5 under `sealed_q5_appetite`), nothing discussed, stage set `done`.
 
 ---
 
@@ -141,6 +188,8 @@ back to the softened answer later.
 
 Write `omega/review.md` as you go.
 
+**Done when:** all six dimensions in `reference/review-dimensions.md` have been covered, every answer is recorded verbatim, disputes are logged, `omega/review.md` is written, and the stage is set `done`. Do not close it with dimensions unasked.
+
 ---
 
 ## Stage: `evidence`
@@ -151,6 +200,16 @@ Now read. Targeted only — never sweep a 100-session log.
 python3 ${CLAUDE_SKILL_DIR}/scripts/omega_paths.py extract <campaign> \
   --what calibration,arc,mortality,npcs,party,sessions
 ```
+
+`/dm:dnd save` keeps only the two most recent sessions in `session-log.md` and
+appends everything older to `session-log-archive.md`, so the archive is where a
+long campaign actually lives — the extractor searches both, plus `npcs-full.md`
+where NPC detail is kept.
+
+Check `files_capped` in the output. A non-empty list means that target hit its
+per-file limit and results for those files are incomplete; re-run that target
+alone with a higher `--max-per-file`, or narrow the search with the dnd skill's
+own `campaign_search.py` (its path is in `omega_paths.py roots`).
 
 Start with `calibration`. If the table has used `/dm:dnd end`, this returns the
 player's own per-session answers to *"what worked, and what would you adjust?"*
@@ -169,8 +228,11 @@ Then, per target:
   danger" and a log with four death saves disagree about something important.
 - `npcs` — attitude shifts, betrayals, allies. Find NPCs who appeared once and
   vanished; ask whether they were dropped or resolved.
-- `party` — the roster changes. For this table specifically, find the session
-  where DM-run PCs became player-run, and reconstruct why.
+- `party` — roster changes, plus `character_timeline`: every character file
+  with its mtime, oldest first. For this table specifically, the gap in that
+  timeline dates when the two DM-run PCs were taken over. Confirm the date
+  against the log before treating it as fact — a copied file carries a copy
+  time — then reconstruct why.
 - `sessions` — session headers. Look for gaps in the calendar (where momentum
   was lost) and clusters (where it was highest).
 
@@ -194,154 +256,39 @@ Put the interview answers beside the record and produce three lists:
 Append all three to `omega/review.md`. If `predict` ran, unseal it here and
 compare predictions against what the finale actually was.
 
+**Done when:** every target has been extracted with no unexplained `files_capped`, the three reconciliation lists are written into `omega/review.md`, `predict` q1–q4 are unsealed and compared, and the stage is set `done`.
+
 ---
 
 ## Stage: `tooling`
 
-A different axis from everything else in Session Omega. `review` and `contract`
-ask whether the DM played well; this asks whether the *machinery* served the
-table. After a hundred sessions a campaign accumulates real operational debt,
-and almost all of it is invisible during play — it shows up as sessions that
-start slowly, continuity that quietly degrades, and features that were there the
-whole time and never got used.
+A different axis from everything else here. `review` and `contract` ask whether
+the DM played well; this asks whether the *machinery* served the table. After a
+hundred sessions a campaign accumulates operational debt that is invisible
+during play — sessions that start slowly, continuity that quietly degrades,
+features that were there the whole time and never got used.
 
 ```bash
 python3 ${CLAUDE_SKILL_DIR}/scripts/omega_health.py all <campaign>
 ```
 
-Read `reference/tooling.md` for what each number means and the fixes that
-follow from it. Output: `omega/tooling.md`. Its config section feeds `build`.
+**Read `reference/tooling.md` before interpreting the output.** It carries the
+load-path model, what each measurement means, the five parts of the audit, and
+the placement rules for anything new. Work all five parts; they inform each
+other, and part 5 feeds `build`.
 
-The audit has four parts. Run all four; they inform each other.
+The one thing to know before reading anything else: `/dm:dnd load` reads
+`state.md`, **`world.md` in full**, `npcs.md` index rows, and **all of
+`characters/*.md`**. Those are a per-session cost for the life of the campaign.
+`session-log.md`, `session-log-archive.md`, `npcs-full.md` and `arc.md` are read
+on demand and can be large for free. `load_path.per_session_est_tokens` in the
+report is the number this stage exists to produce.
 
-### 1. Health and efficiency — the numbers
+Write `omega/tooling.md` using `templates/tooling.md` as the structure. Its
+config and extensions blocks are consumed by `build`.
 
-The single distinction that matters: **`state.md` is read at every
-`/dm:dnd load`; everything else is read on demand.** A large `session-log.md`
-costs nothing. A large `state.md` is a tax paid at the start of every session
-for the life of the campaign, and it is the most common thing wrong with a long
-campaign.
-
-`omega_health.py all` reports per-section token estimates inside `state.md` and
-flags the known patterns. The usual culprit is `## Continuity Archive` growing
-without ever being compressed, which turns the load path into a transcript.
-
-### 2. Feature usage — what the campaign paid for and never used
-
-The script infers usage from artifacts: whether the relationship graph was ever
-initialized, whether pinned facts exist, whether Faction Moves was ever written
-to, which dials were set, whether Live State Flags was maintained.
-
-Two different findings live here, and they need separating:
-
-- **Unused because unwanted** — fine. Note it and move on.
-- **Unused because unknown** — the player didn't know the feature existed, or
-  forgot it after session three. This is the valuable category, and the fix is
-  usually a line in the new campaign's setup rather than a habit the player has
-  to remember.
-
-Ask the player directly about anything that came back unused: did you know about
-this, and would you have wanted it?
-
-### 3. Failures and friction — what actually broke
-
-Interview, not measurement. The record rarely contains its own failures.
-
-- When did you have to correct the DM about something that had happened?
-- Did you ever hand-edit a campaign file? What were you fixing?
-- Did anything crash, hang, or need restarting? The display companion, autorun?
-- Which commands did you try once and abandon? What went wrong?
-- Was there a point where you stopped trusting the DM to remember, and started
-  keeping your own notes? When?
-
-That last one is the most important question in this stage. It dates the moment
-the tooling stopped being trusted, and everything before that date is a working
-system while everything after is a workaround.
-
-### 4. Configuration for the new campaign
-
-Turn the findings into settings, written as a block that `build` consumes
-directly. Every recommendation names the finding behind it.
-
-- **Ruleset** — 2014 or 2024, set in the `state.md` header so first load doesn't
-  prompt for a migration.
-- **Dials** — `difficulty`, `spotlight`, `pacing`. These come from `contract`,
-  but flag any that went unset for the whole last campaign: running on defaults
-  for a hundred sessions is a finding, not a neutral choice.
-- **`roll_mode`** — `players` or `auto`, from what the last campaign actually
-  felt like rather than what was chosen at the start.
-- **`autosave`** — on unless there is a specific reason. Off is how continuity
-  gets lost to compaction.
-- **Graph from session one.** If the last campaign never initialized the
-  relationship graph, initialize the new one at `build`. It is the main defence
-  against continuity loss on exactly the kind of campaign this table runs.
-- **Archive discipline.** If `## Continuity Archive` bloated the load path, set
-  a compression cadence now — a pass every ~20 sessions — and write it into the
-  new campaign's DM Notes so it actually happens.
-- **Display and autorun** — recommend from real usage, not from what sounds
-  appealing. A companion that was started twice in a hundred sessions is not
-  part of this table's setup.
-
-### 5. Extensions and custom content
-
-What is installed, what is worth installing, and what custom material the new
-campaign should carry.
-
-**The load-path rule, before anything else.** The dnd skill reads a fixed set of
-files — `state.md`, `world.md`, `npcs.md`, `session-log.md`, `arc.md`,
-`characters/` — and reads anything else only when something on the load path
-points at it. A markdown file dropped into the campaign directory is therefore
-*never read*, and gives no signal that it isn't being used. A `house-rules.md`
-sitting next to `state.md` can be invisible for a hundred sessions.
-
-So every file this process creates must satisfy one of three conditions, and
-`build` enforces it:
-
-1. It is one of the files `/dm:dnd load` already reads, or
-2. Something on the load path points at it, the way the situational contract
-   tier is reached through a pointer line in `## DM Style Notes`, or
-3. It is deliberately inert — a record for the player, like `omega/review.md`,
-   and is documented as such.
-
-A file that satisfies none of these should not be written. If custom content
-cannot be given a pointer, it belongs inside a file that is already read.
-
-**Check what is installed.**
-
-- **The autosave Stop hook** (`install_autosave_hook.py`) — optional, and
-  prompts the continuity flush on a turn cadence as a backstop to the
-  scene-boundary habit. Ask whether it was installed. If continuity loss or
-  dropped details came up in `review` and the hook was never installed, that is
-  a concrete fix and it costs no contract line.
-- **The display companion** — installed, and actually used? Its TLS setup only
-  matters on an untrusted network.
-- **Supplemental data** (`/dm:dnd data sync`, the `data/` dataset) — whether
-  custom monsters, items or spells were ever added, and whether the ruleset
-  dataset is current.
-
-**Custom content worth carrying forward.** Ask what the player wrote, wanted to
-write, or kept outside the system entirely — house rules, a lore document,
-custom monsters, a list of names, notes they maintained by hand. Anything kept
-in a separate document *because the campaign wouldn't hold it* is the important
-answer here: it means the player was compensating for a gap, and the compaction
-of that habit into the new campaign is a real improvement.
-
-For each item, decide where it lives under the load-path rule above. Most house
-rules belong in the situational contract file, reached by the pointer that is
-already there. Custom monsters and items belong in the supplemental dataset, not
-in prose. A lore bible belongs in `world.md`, or as a corpus if it is long.
-
-**Long-form material.** `/dm:dnd import` builds a lazy corpus — one file per
-chapter under `source/`, indexed, and never loaded at session start. That
-machinery works for any long-form text, not only published modules. If the
-player has a substantial written setting they want the DM to know, importing it
-is the right shape; pasting it into `world.md` puts it on the load path
-permanently and is not.
-
-Record the outcome as an extensions block alongside the config block, naming for
-each item what it is, where it will live, and how it gets read.
-
----
+**Done when:** `omega/tooling.md` exists with all five parts filled, the config
+block is complete, and `omega_state.py set <campaign> tooling done` has run.
 
 ## Stage: `chronicle` *(optional)*
 
@@ -356,12 +303,20 @@ never explained, what would have happened down the road not taken.
 Write it as story, not analysis. Read from `## Continuity Archive` and
 `session-log.md` for material. Output: `omega/chronicle.md`.
 
+**Done when:** `omega/chronicle.md` is written, or the stage is set `skipped`.
+
 ---
 
 ## Stage: `contract`
 
 See `reference/contract.md` for the full procedure, the dial mapping, and the
-test every candidate line must pass.
+tests every candidate line must pass.
+
+**First, read the upstream Standards.** One of those tests rejects any line that
+merely restates a behaviour the dnd skill already mandates, and you cannot apply
+it from memory. Read the `## What Makes a Great DM — Applied Standards` section of
+`<dnd_skill_root>/SKILL.md` — the path comes from `omega_paths.py roots` —
+before writing a single candidate.
 
 In short: a **tiered** DM behaviour contract, sized by what the review actually
 found rather than a fixed count.
@@ -369,12 +324,17 @@ found rather than a fixed count.
 - **Core** → `state.md → ## DM Style Notes` in the new campaign. Read at every
   `/dm:dnd load`, overrides default DM instincts. Every line here costs context
   for the life of the campaign, so it must earn its place.
-- **Situational** → `omega/contract.md`, consulted when a matching situation
-  arises rather than loaded every session.
+- **Situational** → drafted in `omega/contract.md`, then **copied by `build`
+  into the new campaign as `dm-contract.md`**. The pointer line in the new
+  `state.md` names that file. Drafting it in the old campaign's `omega/` and
+  pointing at it from the new one leaves a path that does not resolve — the
+  exact unreachable-file failure this skill warns about.
 - **Dials** → `state.md → ## Session Flags`: `difficulty`, `spotlight`,
   `pacing`. Set explicitly, with the review finding that justifies each.
 - **Experiments** → disputed items, written with a success condition and a
   revert condition, resolved at `audit`.
+
+**Done when:** the upstream Standards have been read, every core line carries a citation, the three dials have values and findings, disputes have become experiments with revert conditions, `omega/contract.md` is written, and the stage is set `done`.
 
 ---
 
@@ -390,8 +350,12 @@ every field. The player confirms or overrides each one.
 Never present a blank questionnaire. The work of this stage is doing the
 inference so the player only has to react to it.
 
-**Unseal question 5 from `predict` here**, and only after the taste profile is
-written — the profile must be derived from evidence before the player's stated
+**If `predict` never ran**, say so plainly and skip the comparison below — ask
+the appetite question now instead, and note in `spec.md` that the answer was
+given after the review and is not independent of it.
+
+Otherwise, **unseal question 5 from `predict` here**, and only after the taste
+profile is written — the profile must be derived from evidence before the player's stated
 appetite is allowed in the room. Then compare the two.
 
 Where they agree, the constraint sheet writes itself. Where they disagree, say
@@ -411,6 +375,8 @@ Fixed for this table, already decided:
 
 Output: `omega/spec.md`.
 
+**Done when:** the taste profile was written before q5 was unsealed, every constraint field has a player-confirmed value, and `omega/spec.md` is written.
+
 ---
 
 ## Stage: `world`
@@ -424,6 +390,8 @@ The central conflict must be renewable: for a 100-session campaign it needs to
 escalate for years without resolving, and factions need somewhere to go. Test
 it by asking what this conflict looks like at session 80. If the answer is "the
 same, but bigger", it isn't renewable.
+
+**Done when:** theme, central conflict, starting region and three truths are written into `omega/spec.md`, and the conflict has passed the session-80 test.
 
 ---
 
@@ -439,6 +407,8 @@ one other PC, and something they want that the campaign can threaten.
 
 Mechanical creation hands off to `/dm:dnd character new` — this skill produces
 the narrative spec, not the stat block.
+
+**Done when:** the party model is chosen with the review finding that justifies it, and every PC has all three ties.
 
 ---
 
@@ -465,14 +435,36 @@ Copy `state.md`, `world.md`, `npcs.md`, `session-log.md` from `templates/` into
 - `## Session Flags` — the three dials, plus `roll_mode` and `autosave` from
   the `tooling` config block.
 - `## Campaign Arc` — the dynamic-arc YAML block, filled from `world`.
-- `world.md → ## Adventure Nodes` — the opening 3–5 nodes as situations.
+- `world.md` — **populate it fully**, not just `## Adventure Nodes`. It is read
+  in full at every load, so placeholders cost the same as content and return
+  nothing: fill `## World Foundations`, `## Three Truths`, `## Factions` and the
+  quest seeds from `spec`, and the opening 3–5 nodes as situations.
+- `state.md → ## World State` — faction states, threat arc stage, in-world date.
+  Standard 11 (Faction Moves) has nothing to operate on without these.
+- `npcs.md` — the opening NPCs with a relationship web between them, the way
+  `/dm:dnd new` would have seeded them.
 - `characters/` — via `/dm:dnd character new`.
 - Anything else the `tooling` config block calls for: initialize the
   relationship graph if the last campaign never had one, and write the archive
   compression cadence into `## DM Notes` so it happens without being
   remembered.
+- `dm-contract.md` — copy the situational tier from `omega/contract.md` into
+  the new campaign directory, and make the pointer line in `## DM Style Notes`
+  name `dm-contract.md`. Verify the path resolves from the new campaign dir.
 - The `tooling` extensions block: install what it calls for, and place each
   piece of custom content where that block assigned it.
+- `## DM Notes` — the things that otherwise have no mechanism:
+  - **Accelerated tier 1.** Upstream levelling is XP-driven, so "a level every
+    session or two until 5" happens only if written down. State it as a
+    milestone rule here and as a line in `## DM Style Notes`.
+  - **The act-boundary exits** from `spec`. Do not put these in the arc's
+    `steering_notes` — `/dm:dnd end` rewrites that field every session.
+  - **The archive compression cadence.**
+  - **The `audit` reminders** at roughly session 5 and 15, so they actually
+    fire.
+- Characters: `/dm:dnd character new`. The data root holds a global character
+  roster including the finished campaign's level-20 PCs — this is a fresh world,
+  so do not import them.
 
 **Before finishing, check every file written against the load-path rule.** For
 each one, name which of the three conditions it satisfies — read directly,
@@ -480,9 +472,22 @@ pointed at from the load path, or deliberately inert. A file satisfying none of
 them is invisible to the DM and must be moved into a file that is read, given a
 pointer, or not written at all.
 
-Then verify: run `/dm:dnd load <new-campaign>` and confirm it reads the arc,
-the dials and the style notes without prompting for a migration or repair.
-A campaign that needs hand-fixing on first load was not built.
+Then verify by loading it — but know what a healthy load looks like, because
+several prompts are normal and are **not** build failures:
+
+- `/dm:dnd load` always asks about display mode and dice mode.
+- Graph init is a hard requirement upstream, so a new campaign will run the
+  init flow on first load. Expected.
+
+What *would* mean the build is wrong: a ruleset-migration prompt (the
+`**Ruleset:**` header is missing), a complaint about a malformed
+`## Campaign Arc`, or a recap that cannot find the style notes or dials.
+
+Loading also drops the session into Active DM Mode. **Stop there** — do not
+begin narrating. The build is verified; play is a separate decision the player
+makes.
+
+**Done when:** the campaign loads, `dm-contract.md` resolves from the new campaign directory, every written file has been checked against the load-path rule, and nothing in `world.md` or `state.md` is still a template placeholder.
 
 ---
 
@@ -496,7 +501,15 @@ Promote lines that worked into permanent style notes, cut lines that produced
 nothing, and rewrite lines that were directionally right but badly phrased.
 
 For each experiment: check its success condition against the record and resolve
-it — adopt, revert, or extend once with a stated reason.
+it — adopt, revert, or extend once with a stated reason. Record the outcome
+against the dispute it came from:
+
+```bash
+python3 ${CLAUDE_SKILL_DIR}/scripts/omega_state.py resolve <campaign> <n> "<outcome>"
+```
+
+`status` reports `disputes_unresolved`; the audit is not finished while that is
+non-zero and the experiments have run their course.
 
 Re-run `omega_health.py all <new-campaign>` here too. Fifteen sessions is early
 enough that a bloat pattern is cheap to correct and late enough to be visible —
@@ -508,3 +521,5 @@ Overcorrection is the expected failure. A contract written straight after a
 campaign ends over-weights how the *ending* felt: rules like "make everything
 deadly" read as wisdom on day one and as a mistake by session 12. Be willing to
 cut your own lines.
+
+**Done when:** every core line has a verdict, every experiment is resolved, `disputes_unresolved` is zero, and the audit log in `omega/contract.md` is updated.

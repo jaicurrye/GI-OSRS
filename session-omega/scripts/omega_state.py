@@ -14,7 +14,13 @@ Usage:
     python3 omega_state.py record <campaign> <stage> <key> <value>
     python3 omega_state.py record <campaign> <stage> <key> --stdin
     python3 omega_state.py dispute <campaign> <claim> --dm <text> --player <text>
-    python3 omega_state.py dump <campaign> [--stage S]
+    python3 omega_state.py dump <campaign> [--stage S] [--key K]
+    python3 omega_state.py resolve <campaign> <index> <text>
+
+Sealed answers: a key beginning with `sealed_` is hidden from `dump` unless
+named with `--key`. `predict` uses this so question 5 (next-campaign appetite)
+cannot be read at `evidence` alongside questions 1-4 — it unseals at `spec`,
+after the taste profile has been written independently.
 """
 
 import argparse
@@ -52,7 +58,12 @@ def load(campaign):
     p = progress_path(campaign)
     if not p.exists():
         sys.exit(f"no Session Omega state for '{campaign}'. Run: omega_state.py init {campaign}")
-    return json.loads(p.read_text())
+    try:
+        return json.loads(p.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as e:
+        sys.exit(f"progress file is corrupt: {p}\n  {e}\n"
+                 "Fix it by hand or move it aside and re-init; do not overwrite "
+                 "it blindly, it holds the recorded answers.")
 
 
 def save(campaign, data):
@@ -61,7 +72,7 @@ def save(campaign, data):
     data["updated"] = now()
     # Write-then-rename so an interrupted write can never truncate the file.
     tmp = progress_path(campaign).with_suffix(".json.tmp")
-    tmp.write_text(json.dumps(data, indent=2, ensure_ascii=False))
+    tmp.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
     tmp.replace(progress_path(campaign))
 
 
@@ -84,6 +95,8 @@ def cmd_init(a):
 
 def cmd_status(a):
     d = load(a.campaign)
+    stages = d["stages"]
+    nxt = next((s for s in STAGES if stages[s]["status"] in ("pending", "active")), None)
     print(json.dumps({
         "campaign": d["campaign"],
         "new_campaign": d.get("new_campaign"),
@@ -91,7 +104,11 @@ def cmd_status(a):
         "stages": {k: v["status"] for k, v in d["stages"].items()},
         "answers_recorded": {k: len(v["answers"]) for k, v in d["stages"].items() if v["answers"]},
         "disputed": len(d.get("disputed", [])),
-        "next": next((s for s in STAGES if d["stages"][s]["status"] in ("pending", "active")), None),
+        "disputes_unresolved": sum(1 for x in d.get("disputed", [])
+                                   if not x.get("resolution")),
+        "next": nxt,
+        "reminder": ("mark a stage done with `set <campaign> <stage> done` — "
+                     "recording answers alone leaves it active"),
     }, indent=2))
 
 
@@ -133,7 +150,44 @@ def cmd_dispute(a):
 
 def cmd_dump(a):
     d = load(a.campaign)
-    print(json.dumps(d["stages"][a.stage] if a.stage else d, indent=2, ensure_ascii=False))
+    if a.stage and a.stage not in STAGES:
+        sys.exit(f"unknown stage '{a.stage}' (have: {', '.join(STAGES)})")
+
+    if a.key:
+        if not a.stage:
+            sys.exit("--key requires --stage")
+        answers = d["stages"][a.stage]["answers"]
+        if a.key not in answers:
+            sys.exit(f"no answer '{a.key}' recorded for stage '{a.stage}'")
+        print(json.dumps({a.key: answers[a.key]}, indent=2, ensure_ascii=False))
+        return
+
+    def redact(stage):
+        st = dict(stage)
+        sealed = [k for k in st["answers"] if k.startswith("sealed_")]
+        st["answers"] = {k: v for k, v in st["answers"].items()
+                         if not k.startswith("sealed_")}
+        if sealed:
+            st["sealed_keys_withheld"] = sealed
+        return st
+
+    if a.stage:
+        print(json.dumps(redact(d["stages"][a.stage]), indent=2, ensure_ascii=False))
+    else:
+        out = dict(d)
+        out["stages"] = {k: redact(v) for k, v in d["stages"].items()}
+        print(json.dumps(out, indent=2, ensure_ascii=False))
+
+
+def cmd_resolve(a):
+    d = load(a.campaign)
+    disputes = d.get("disputed", [])
+    if not 1 <= a.index <= len(disputes):
+        sys.exit(f"no dispute #{a.index} (have {len(disputes)})")
+    disputes[a.index - 1]["resolution"] = a.text
+    disputes[a.index - 1]["resolved_at"] = now()
+    save(a.campaign, d)
+    print(f"dispute #{a.index} resolved")
 
 
 def main():
@@ -148,7 +202,10 @@ def main():
     r.add_argument("value", nargs="?"); r.add_argument("--stdin", action="store_true"); r.set_defaults(fn=cmd_record)
     p = sub.add_parser("dispute"); p.add_argument("campaign"); p.add_argument("claim")
     p.add_argument("--dm", required=True); p.add_argument("--player", required=True); p.set_defaults(fn=cmd_dispute)
-    u = sub.add_parser("dump"); u.add_argument("campaign"); u.add_argument("--stage", default=None); u.set_defaults(fn=cmd_dump)
+    u = sub.add_parser("dump"); u.add_argument("campaign"); u.add_argument("--stage", default=None)
+    u.add_argument("--key", default=None); u.set_defaults(fn=cmd_dump)
+    v = sub.add_parser("resolve"); v.add_argument("campaign"); v.add_argument("index", type=int)
+    v.add_argument("text"); v.set_defaults(fn=cmd_resolve)
 
     a = ap.parse_args()
     a.fn(a)
