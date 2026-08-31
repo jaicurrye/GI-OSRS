@@ -8,8 +8,14 @@ into `state.md`; this file is the full record and the situational tier.
 | # | Line | Finding | Citation |
 |---|---|---|---|
 
-*Plus one pointer line: "Situational ruleset in `omega/contract.md` — consult at
-combat start, at downtime, and when a faction acts."*
+*Plus one pointer line, naming the file as it will exist **in the new campaign**
+after `build` copies it there:*
+
+> Situational ruleset in `dm-contract.md` — consult at combat start, at
+> downtime, and when a faction acts.
+
+*Never point at `omega/…` — that directory belongs to the campaign being
+reviewed and does not exist beside the new campaign's `state.md`.*
 
 ## Dials — copied to `state.md → ## Session Flags`
 

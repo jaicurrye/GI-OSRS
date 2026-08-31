@@ -59,11 +59,18 @@ def load(campaign):
     if not p.exists():
         sys.exit(f"no Session Omega state for '{campaign}'. Run: omega_state.py init {campaign}")
     try:
-        return json.loads(p.read_text(encoding="utf-8"))
-    except json.JSONDecodeError as e:
-        sys.exit(f"progress file is corrupt: {p}\n  {e}\n"
+        d = json.loads(p.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError) as e:
+        sys.exit(f"progress file unreadable: {p}\n  {e}\n"
                  "Fix it by hand or move it aside and re-init; do not overwrite "
                  "it blindly, it holds the recorded answers.")
+    if not isinstance(d, dict) or not isinstance(d.get("stages"), dict):
+        sys.exit(f"progress file has the wrong shape (no 'stages' object): {p}\n"
+                 "Move it aside and re-init rather than overwriting it.")
+    # A stage added to STAGES after this file was written must not KeyError.
+    for st in STAGES:
+        d["stages"].setdefault(st, {"status": "pending", "answers": {}})
+    return d
 
 
 def save(campaign, data):

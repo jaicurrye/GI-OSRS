@@ -46,18 +46,29 @@ cause. These are removed from the contract and fixed here instead.*
 
 *Consumed by `build`. Every line names its finding.*
 
+Fill what this stage can determine. The three dials are derived at `contract`
+and the ruleset is confirmed at `spec` — leave them as `TBD` here rather than
+guessing two stages early, and complete them before `build` reads this block.
+
 ```yaml
-ruleset:        # 2014 | 2024
-roll_mode:      # players | auto
-autosave:       # on | off
-difficulty:     # from contract
-spotlight:      # from contract
-pacing:         # from contract
-graph_init:     # true | false — initialize at build
-archive_cadence:# e.g. "compress every 20 sessions"
-display:        # use | skip
-autorun:        # use | skip
+# decided here, from the audit
+roll_mode:       # players | auto
+autosave:        # on | off  (default on; only set off with a reason)
+archive_cadence: # e.g. "compress every 20 sessions"
+display:         # use | skip
+autorun:         # use | skip
+
+# filled at contract
+difficulty:      # TBD
+spotlight:       # TBD
+pacing:          # TBD
+
+# filled at spec
+ruleset:         # TBD — 2014 | 2024
 ```
+
+*Graph init is a hard requirement at first load upstream, so it is not a
+setting — a new campaign gets the graph whether or not you ask.*
 
 | Setting | Value | Finding |
 |---|---|---|
@@ -68,7 +79,7 @@ autorun:        # use | skip
 
 | Extension | Installed | Used | Keep for campaign 2 |
 |---|---|---|---|
-| Autosave Stop hook | | | |
+| Autosave Stop hook | *(check with `install_autosave_hook.py --status`)* | | |
 | Display companion | | | |
 | Supplemental dataset | | | |
 

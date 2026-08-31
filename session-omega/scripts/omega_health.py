@@ -47,7 +47,10 @@ LOAD_PATH = {"state.md", "world.md"}
 PARTIAL = {"npcs.md"}
 # Read only on demand. Size here is cheap.
 COLD = {"session-log.md", "session-log-archive.md", "npcs-full.md",
-        "world-nodes.md", "world-seeds.md", "arc.md", "session-tail.md"}
+        "world-nodes.md", "world-seeds.md", "arc.md", "session-tail.md",
+        "source-index.md"}
+# Machine state, not prose the DM reads.
+INERT = {"graph.json", "session_tail.json", "active-campaign.json"}
 
 
 def classify(rel):
@@ -60,6 +63,10 @@ def classify(rel):
         return "full"          # every character file is read at load
     if rel in COLD or rel.startswith("source/"):
         return "on-demand"
+    if rel in INERT:
+        return "inert"
+    # Not a file the dnd skill knows about. Nothing points at it, so the DM
+    # never sees it — see the reachability rule in reference/tooling.md.
     return "unknown"
 
 # ~4 bytes per token is the standard rough estimate for English prose. Good
@@ -75,6 +82,28 @@ SECTION_HIGH = 3000
 
 def est_tokens(n_bytes):
     return round(n_bytes / BYTES_PER_TOKEN)
+
+
+def heading_indices(lines):
+    """Indices of real `## ` headings, ignoring fenced code blocks.
+
+    build writes instruction prose into ## DM Notes, so a pasted markdown
+    example can carry a `## ` at column 0. Parsed naively that invents a
+    section, truncates the one it lands in, and flips the feature checks.
+    """
+    out, fence = [], None
+    for i, ln in enumerate(lines):
+        stripped = ln.lstrip()
+        if stripped.startswith("```") or stripped.startswith("~~~"):
+            marker = stripped[:3]
+            if fence is None:
+                fence = marker
+            elif fence == marker:
+                fence = None
+            continue
+        if fence is None and ln.startswith("## "):
+            out.append(i)
+    return out
 
 
 def files_report(cdir):
@@ -117,7 +146,7 @@ def sections_report(cdir):
     text = state.read_text(encoding="utf-8", errors="replace")
     lines = text.splitlines()
 
-    marks = [(i, ln[3:].strip()) for i, ln in enumerate(lines) if ln.startswith("## ")]
+    marks = [(i, lines[i][3:].strip()) for i in heading_indices(lines)]
     sections = []
     for idx, (start, title) in enumerate(marks):
         end = marks[idx + 1][0] if idx + 1 < len(marks) else len(lines)
@@ -143,15 +172,27 @@ def sections_report(cdir):
     }
 
 
+def _revision_log(arc_text):
+    """The revision_log block of the arc YAML, if it has entries."""
+    m = re.search(r"^\s*revision_log:\s*(.*?)(?=^\s*\w[\w_]*:|\Z)", arc_text,
+                  re.MULTILINE | re.DOTALL)
+    return m.group(1) if m else ""
+
+
 def features_report(cdir):
     """Infer which optional systems were actually used, from artifacts left behind."""
     state = cdir / "state.md"
     text = state.read_text(encoding="utf-8", errors="replace") if state.exists() else ""
 
+    lines = text.splitlines()
+    idx = heading_indices(lines)
+
     def section(name):
-        m = re.search(rf"^## {re.escape(name)}\s*$(.*?)(?=^## |\Z)", text,
-                      re.MULTILINE | re.DOTALL)
-        return m.group(1).strip() if m else ""
+        for n, i in enumerate(idx):
+            if lines[i][3:].strip() == name:
+                end = idx[n + 1] if n + 1 < len(idx) else len(lines)
+                return "\n".join(lines[i + 1:end]).strip()
+        return ""
 
     def used(body):
         # A section holding only its own help text or a "(none)" marker was
@@ -164,9 +205,15 @@ def features_report(cdir):
             t = ln.strip()
             if not t:
                 continue
-            t = re.sub(r"\*+\(?[^*]*?\)?\*+", "", t)      # bold/italic runs
+            # Drop a whole-line italic hint — the template's own help text —
+            # but keep emphasised content: "- *The Hand is hostile.*" is a real
+            # faction move, and discarding it reports the section as unused.
+            if re.fullmatch(r"\*[^*].*\*", t) or re.fullmatch(r"_[^_].*_", t):
+                continue
+            t = re.sub(r"\*\([^)]*\)\*", "", t)            # trailing "*(hint)*"
             t = re.sub(r"\(none[^)]*\)", "", t)             # (none established)
-            t = t.strip(" :*-—")
+            t = t.replace("*", "").replace("_", "")
+            t = t.strip(" :-—")
             if t:
                 out.append(t)
         return bool(out)
@@ -194,8 +241,9 @@ def features_report(cdir):
 
     # Only these three are dials in the upstream sense — deliberate tuning of
     # DM defaults. The rest are session flags with their own defaults
-    # (autosave is ON unless disabled; autorun and tutor_mode are
-    # session-scoped), so reporting them as "never set" would be wrong.
+    # (autosave is ON unless disabled; tutor_mode is session-scoped; autorun
+    # persists in state.md but is a mode, not a tuning dial), so reporting them
+    # as "never set" would be wrong.
     DIALS = ("difficulty", "spotlight", "pacing")
     OTHER_FLAGS = ("roll_mode", "autosave", "autorun", "tutor_mode")
     dials = {d: flag(d) for d in DIALS}
@@ -216,7 +264,9 @@ def features_report(cdir):
         "live_state_flags_used": used(section("Live State Flags")),
         "continuity_archive_used": used(section("Continuity Archive")),
         "arc_type": arc_type,
-        "arc_revisions": len(re.findall(r"^\s*-\s*(?:date|revised):", section("Campaign Arc"),
+        # revision_log entries are quoted YAML strings, not mappings:
+        #   - "2026-05-01: 2b — cost — the duke died instead"
+        "arc_revisions": len(re.findall(r'^\s*-\s*["\']', _revision_log(section("Campaign Arc")),
                                         re.MULTILINE)),
         "dials_set": {k: v for k, v in dials.items() if v},
         "dials_unset": [k for k, v in dials.items() if not v],
@@ -231,9 +281,24 @@ def features_report(cdir):
 
 def findings(files, sections, features, cdir):
     """The known bloat and misconfiguration patterns, checked explicitly."""
+    if not (cdir / "state.md").exists():
+        return [f"No state.md in {cdir} — this is not a campaign directory, "
+                "or the campaign was never saved. Nothing below can be assessed."]
+
     out = []
     by = {f["file"]: f for f in files}
     lp = load_path_total(files)
+
+    # The reachability rule the tooling stage is built on: a file the dnd skill
+    # does not know about is read only if something on the load path points at
+    # it, and nothing here can see such a pointer. Surface it rather than
+    # letting it sit unread forever.
+    unknown = [f["file"] for f in files if f["load_class"] == "unknown"]
+    if unknown:
+        out.append("Files the dnd skill never reads on its own: " +
+                   ", ".join(unknown) + ". Each is invisible to the DM unless a "
+                   "file on the load path points at it — check, because there is "
+                   "no error when nothing does.")
 
     if lp["per_session_est_tokens"] > 12000:
         out.append(f"Every session starts by reading ~{lp['per_session_est_tokens']} tokens "
@@ -257,6 +322,9 @@ def findings(files, sections, features, cdir):
             if sec["flag"] == "high":
                 out.append(f"state.md → ## {sec['section']} is ~{sec['est_tokens']} tokens. "
                            "Archive or compress it.")
+    # Note for `audit`: on a campaign only a few sessions old, a missing
+    # Continuity Archive is expected — /dm:dnd save creates it — and is not a
+    # finding. DM Style Notes, however, should exist from build onward.
     if isinstance(sections, dict) and not sections.get("dm_style_notes_present"):
         out.append("No '## DM Style Notes' section in state.md — the per-campaign "
                    "calibration mechanism was never used, so nothing the table "

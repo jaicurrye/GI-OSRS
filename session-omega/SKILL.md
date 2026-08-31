@@ -196,9 +196,13 @@ Write `omega/review.md` as you go.
 
 Now read. Targeted only — never sweep a 100-session log.
 
+**Run one target at a time.** All six at once on a long campaign returns tens of
+thousands of tokens in a single result, which costs more context than the
+findings are worth.
+
 ```bash
-python3 ${CLAUDE_SKILL_DIR}/scripts/omega_paths.py extract <campaign> \
-  --what calibration,arc,mortality,npcs,party,sessions
+python3 ${CLAUDE_SKILL_DIR}/scripts/omega_paths.py extract <campaign> --what calibration
+# then arc, mortality, npcs, party, sessions — reading each before the next
 ```
 
 `/dm:dnd save` keeps only the two most recent sessions in `session-log.md` and
@@ -206,10 +210,16 @@ appends everything older to `session-log-archive.md`, so the archive is where a
 long campaign actually lives — the extractor searches both, plus `npcs-full.md`
 where NPC detail is kept.
 
-Check `files_capped` in the output. A non-empty list means that target hit its
-per-file limit and results for those files are incomplete; re-run that target
-alone with a higher `--max-per-file`, or narrow the search with the dnd skill's
-own `campaign_search.py` (its path is in `omega_paths.py roots`).
+Every target reports whether its result is complete. `files_capped` names files
+that hit the per-file limit; `stopped_by` is set when the whole target hit the
+global count or byte ceiling, and `files_unsearched` then lists what was never
+reached. Any of the three means you are looking at a partial result.
+
+When that happens, **narrow before you widen** — search a single file
+(`--what npcs` reads all of them, but the dnd skill's `campaign_search.py` takes
+`--files archive` and does keyword AND-search; its path is in
+`omega_paths.py roots`). Raising `--max-bytes` on a 100-session campaign is how
+you lose the session to one tool result.
 
 Start with `calibration`. If the table has used `/dm:dnd end`, this returns the
 player's own per-session answers to *"what worked, and what would you adjust?"*
@@ -277,12 +287,9 @@ load-path model, what each measurement means, the five parts of the audit, and
 the placement rules for anything new. Work all five parts; they inform each
 other, and part 5 feeds `build`.
 
-The one thing to know before reading anything else: `/dm:dnd load` reads
-`state.md`, **`world.md` in full**, `npcs.md` index rows, and **all of
-`characters/*.md`**. Those are a per-session cost for the life of the campaign.
-`session-log.md`, `session-log-archive.md`, `npcs-full.md` and `arc.md` are read
-on demand and can be large for free. `load_path.per_session_est_tokens` in the
-report is the number this stage exists to produce.
+`load_path.per_session_est_tokens` in the report is the number this stage exists
+to produce. What is and is not on that load path is not obvious and is easy to
+get backwards — the reference states it; do not work from memory.
 
 Write `omega/tooling.md` using `templates/tooling.md` as the structure. Its
 config and extensions blocks are consumed by `build`.
@@ -375,7 +382,7 @@ Fixed for this table, already decided:
 
 Output: `omega/spec.md`.
 
-**Done when:** the taste profile was written before q5 was unsealed, every constraint field has a player-confirmed value, and `omega/spec.md` is written.
+**Done when:** the taste profile was written before q5 was unsealed, every constraint field has a player-confirmed value, and `omega/spec.md` is written. Set the stage `done`.
 
 ---
 
@@ -391,7 +398,7 @@ escalate for years without resolving, and factions need somewhere to go. Test
 it by asking what this conflict looks like at session 80. If the answer is "the
 same, but bigger", it isn't renewable.
 
-**Done when:** theme, central conflict, starting region and three truths are written into `omega/spec.md`, and the conflict has passed the session-80 test.
+**Done when:** theme, central conflict, starting region and three truths are written into `omega/spec.md`, and the conflict has passed the session-80 test. Set the stage `done`.
 
 ---
 
@@ -408,7 +415,7 @@ one other PC, and something they want that the campaign can threaten.
 Mechanical creation hands off to `/dm:dnd character new` — this skill produces
 the narrative spec, not the stat block.
 
-**Done when:** the party model is chosen with the review finding that justifies it, and every PC has all three ties.
+**Done when:** the party model is chosen with the review finding that justifies it, and every PC has all three ties. Set the stage `done`.
 
 ---
 
@@ -424,7 +431,9 @@ produced.
 python3 ${CLAUDE_SKILL_DIR}/scripts/omega_paths.py roots   # for templates_dir
 ```
 
-Copy `state.md`, `world.md`, `npcs.md`, `session-log.md` from `templates/` into
+Copy `state.md`, `world.md`, `npcs.md`, `session-log.md` from **the dnd skill's**
+`templates/` (`templates_dir` in `omega_paths.py roots` — not this skill's
+`templates/`, which holds Session Omega's own output shapes) into
 `<campaigns>/<new-campaign>/`, then populate:
 
 - `state.md` header: name, date, session count 0, and the **ruleset** line
@@ -437,8 +446,12 @@ Copy `state.md`, `world.md`, `npcs.md`, `session-log.md` from `templates/` into
 - `## Campaign Arc` — the dynamic-arc YAML block, filled from `world`.
 - `world.md` — **populate it fully**, not just `## Adventure Nodes`. It is read
   in full at every load, so placeholders cost the same as content and return
-  nothing: fill `## World Foundations`, `## Three Truths`, `## Factions` and the
-  quest seeds from `spec`, and the opening 3–5 nodes as situations.
+  nothing. Follow the template's own shape rather than inventing sections: it
+  carries `## The Settlement`, `## The Nearby Threat` and `## The Mystery`, each
+  with its own `### Three Truths` subsection, plus `## Factions` and the quest
+  seeds. `spec`'s three world-truths are a different thing — distribute them
+  into those three subsections, or add them under World Foundations; do not
+  create a top-level `## Three Truths`, which the template does not have.
 - `state.md → ## World State` — faction states, threat arc stage, in-world date.
   Standard 11 (Faction Moves) has nothing to operate on without these.
 - `npcs.md` — the opening NPCs with a relationship web between them, the way
@@ -487,7 +500,7 @@ Loading also drops the session into Active DM Mode. **Stop there** — do not
 begin narrating. The build is verified; play is a separate decision the player
 makes.
 
-**Done when:** the campaign loads, `dm-contract.md` resolves from the new campaign directory, every written file has been checked against the load-path rule, and nothing in `world.md` or `state.md` is still a template placeholder.
+**Done when:** the campaign loads, `dm-contract.md` resolves from the new campaign directory, every written file has been checked against the load-path rule, and nothing in `world.md` or `state.md` is still a template placeholder. Set the stage `done`.
 
 ---
 
@@ -508,10 +521,15 @@ against the dispute it came from:
 python3 ${CLAUDE_SKILL_DIR}/scripts/omega_state.py resolve <campaign> <n> "<outcome>"
 ```
 
-`status` reports `disputes_unresolved`; the audit is not finished while that is
-non-zero and the experiments have run their course.
+Dispute numbers come from `dump <campaign>` with no `--stage`, which prints the
+`disputed` array in order; `<n>` is the 1-based position. `status` reports
+`disputes_unresolved`; the audit is not finished while that is non-zero and the
+experiments have run their course.
 
-Re-run `omega_health.py all <new-campaign>` here too. Fifteen sessions is early
+Re-run `omega_health.py all <new-campaign>` here too — discounting the findings
+that are simply "young campaign": a missing `## Continuity Archive` at session 5
+is expected, since `/dm:dnd save` creates it. A missing `## DM Style Notes` is
+not, and would mean `build` did not write the contract. Fifteen sessions is early
 enough that a bloat pattern is cheap to correct and late enough to be visible —
 if `state.md` is already growing into the load path, the archive cadence from
 `tooling` is not being honoured, and that is worth catching now rather than at
@@ -522,4 +540,4 @@ campaign ends over-weights how the *ending* felt: rules like "make everything
 deadly" read as wisdom on day one and as a mistake by session 12. Be willing to
 cut your own lines.
 
-**Done when:** every core line has a verdict, every experiment is resolved, `disputes_unresolved` is zero, and the audit log in `omega/contract.md` is updated.
+**Done when:** every core line has a verdict, every experiment is resolved, `disputes_unresolved` is zero, and the audit log in `omega/contract.md` is updated. Set the stage `done`.

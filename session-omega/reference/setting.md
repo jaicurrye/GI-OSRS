@@ -94,9 +94,13 @@ party of tourists in someone else's setting.
 
 Designed for a long epic, but each act boundary gets a **stopping shape**: a
 state the world could plausibly be left in that reads as an ending rather than
-an abandonment. Note it in the arc's `steering_notes`. It costs nothing during
-play and means that if life intervenes at session 40 there is an ending
-available.
+an abandonment.
+
+Record these in `state.md → ## DM Notes`, **not** in the arc's `steering_notes`:
+`/dm:dnd end` rewrites `steering_notes` every session, so an exit written there
+is gone within one session. Per-act `drive` fields are also durable if you want
+them closer to the arc. It costs nothing during play and means that if life
+intervenes at session 40 there is an ending available.
 
 ## Party architecture
 

@@ -55,7 +55,11 @@ SKILL_CANDIDATES = [
 
 # Directory copies made by the graph-init and ruleset-migration flows. Not
 # campaigns, and listing them shows the user phantom duplicates.
-BACKUP_RE = re.compile(r"\.backup[-.]|\.bak$")
+# Upstream's graph-init and ruleset-migration copies (`<name>.backup-<stamp>`),
+# plus the backup this skill's own pre-review step tells the player to make.
+# Deliberately anchored to a dot so a campaign legitimately named
+# "my-backup-camp" is not hidden.
+BACKUP_RE = re.compile(r"\.backup[-.]|\.omega-backup|\.bak$")
 
 
 def data_root() -> pathlib.Path:
@@ -161,7 +165,16 @@ SEARCH_FILES = [
 ]
 
 
-def extract(name, what, context=2, max_per_file=120):
+def extract(name, what, context=2, max_per_file=120, max_total=250, max_bytes=60000):
+    """Targeted regex extraction with three independent ceilings.
+
+    Per-file caps stop one large file starving later ones. A global cap and a
+    byte budget stop the whole result blowing the context window: on a real
+    100-session campaign the six targets together can otherwise emit hundreds of
+    kilobytes in a single tool result, which is worse than finding nothing.
+    Every ceiling that bites is named in the output so the caller knows the
+    result is partial and can narrow the search rather than widen the cap.
+    """
     cdir = campaign_dir(name)
     if not cdir.is_dir():
         sys.exit(f"no such campaign: {cdir}")
@@ -174,7 +187,11 @@ def extract(name, what, context=2, max_per_file=120):
         rx = re.compile(pat, re.IGNORECASE | re.MULTILINE)
 
         hits, capped, searched, missing = [], [], [], []
+        nbytes = 0
+        stopped = None
         for fname in SEARCH_FILES:
+            if stopped:
+                break
             f = cdir / fname
             if not f.exists():
                 missing.append(fname)
@@ -183,19 +200,33 @@ def extract(name, what, context=2, max_per_file=120):
             lines = f.read_text(encoding="utf-8", errors="replace").splitlines()
             n_before = len(hits)
             for i, line in enumerate(lines):
-                if rx.search(line):
-                    if len(hits) - n_before >= max_per_file:
-                        capped.append(fname)
-                        break
-                    lo, hi = max(0, i - context), min(len(lines), i + context + 1)
-                    hits.append({"file": fname, "line": i + 1,
-                                 "text": "\n".join(lines[lo:hi]).strip()})
+                if not rx.search(line):
+                    continue
+                if len(hits) - n_before >= max_per_file:
+                    capped.append(fname)
+                    break
+                if len(hits) >= max_total:
+                    stopped = "max_total"
+                    break
+                lo, hi = max(0, i - context), min(len(lines), i + context + 1)
+                text = "\n".join(lines[lo:hi]).strip()
+                if nbytes + len(text) > max_bytes:
+                    stopped = "max_bytes"
+                    break
+                nbytes += len(text)
+                hits.append({"file": fname, "line": i + 1, "text": text})
 
         results[key] = {
             "count": len(hits),
+            "approx_bytes": nbytes,
             "files_searched": searched,
             "files_absent": missing,
-            "files_capped": sorted(set(capped)),  # non-empty = results incomplete HERE
+            "files_capped": sorted(set(capped)),
+            # Any of these three being set means the result is PARTIAL. Narrow
+            # the search (one target, --what X) before raising a ceiling.
+            "stopped_by": stopped,
+            "files_unsearched": [f for f in SEARCH_FILES
+                                 if f not in searched and f not in missing],
             "hits": hits,
         }
     return results
@@ -235,6 +266,8 @@ def main():
     e.add_argument("--what", default="calibration,arc,mortality,npcs,party,sessions")
     e.add_argument("--context", type=int, default=2)
     e.add_argument("--max-per-file", type=int, default=120)
+    e.add_argument("--max-total", type=int, default=250)
+    e.add_argument("--max-bytes", type=int, default=60000)
     a = ap.parse_args()
 
     if a.cmd == "roots":
@@ -251,7 +284,8 @@ def main():
         print(json.dumps(list_campaigns(), indent=2))
     else:
         what = [w.strip() for w in a.what.split(",") if w.strip()]
-        out = extract(a.campaign, what, a.context, a.max_per_file)
+        out = extract(a.campaign, what, a.context, a.max_per_file,
+                      a.max_total, a.max_bytes)
         if "party" in what:
             out["party"]["character_timeline"] = character_timeline(a.campaign)
         print(json.dumps(out, indent=2, ensure_ascii=False))
