@@ -42,11 +42,11 @@ with a path starting `/scripts/`, the variable is unset — substitute the real
 path before continuing rather than retrying.
 
 ```bash
-python3 ${CLAUDE_SKILL_DIR}/scripts/omega_paths.py roots
-python3 ${CLAUDE_SKILL_DIR}/scripts/omega_paths.py campaigns
+python ${CLAUDE_SKILL_DIR}/scripts/omega_paths.py roots
+python ${CLAUDE_SKILL_DIR}/scripts/omega_paths.py campaigns
 # first run only — `status` exits with an error until this exists:
-python3 ${CLAUDE_SKILL_DIR}/scripts/omega_state.py init <campaign> --new-campaign <new>
-python3 ${CLAUDE_SKILL_DIR}/scripts/omega_state.py status <campaign>
+python ${CLAUDE_SKILL_DIR}/scripts/omega_state.py init <campaign> --new-campaign <new>
+python ${CLAUDE_SKILL_DIR}/scripts/omega_state.py status <campaign>
 ```
 
 `roots` reports the data root, and whether the dnd skill's `templates/` were
@@ -56,7 +56,7 @@ the dnd skill is installed rather than guessing or writing files from memory.
 **Record every answer as it is given**, not at the end of a stage:
 
 ```bash
-python3 ${CLAUDE_SKILL_DIR}/scripts/omega_state.py record <campaign> <stage> <key> --stdin <<'ANS'
+python ${CLAUDE_SKILL_DIR}/scripts/omega_state.py record <campaign> <stage> <key> --stdin <<'ANS'
 <the player's answer, verbatim>
 ANS
 ```
@@ -69,7 +69,7 @@ nothing moves it to `done` on its own, and `status.next` keeps returning the
 first unfinished stage until you do:
 
 ```bash
-python3 ${CLAUDE_SKILL_DIR}/scripts/omega_state.py set <campaign> <stage> done
+python ${CLAUDE_SKILL_DIR}/scripts/omega_state.py set <campaign> <stage> done
 ```
 
 Read answers back with `dump <campaign> --stage <stage>`. Keys beginning
@@ -174,7 +174,7 @@ merely unpleasant:
    purposes of the review — but record the disagreement:
 
 ```bash
-python3 ${CLAUDE_SKILL_DIR}/scripts/omega_state.py dispute <campaign> "<the claim>" \
+python ${CLAUDE_SKILL_DIR}/scripts/omega_state.py dispute <campaign> "<the claim>" \
   --dm "<what the record shows>" --player "<what they hold>"
 ```
 
@@ -201,7 +201,7 @@ thousands of tokens in a single result, which costs more context than the
 findings are worth.
 
 ```bash
-python3 ${CLAUDE_SKILL_DIR}/scripts/omega_paths.py extract <campaign> --what calibration
+python ${CLAUDE_SKILL_DIR}/scripts/omega_paths.py extract <campaign> --what calibration
 # then arc, mortality, npcs, party, sessions — reading each before the next
 ```
 
@@ -279,7 +279,7 @@ during play — sessions that start slowly, continuity that quietly degrades,
 features that were there the whole time and never got used.
 
 ```bash
-python3 ${CLAUDE_SKILL_DIR}/scripts/omega_health.py all <campaign>
+python ${CLAUDE_SKILL_DIR}/scripts/omega_health.py all <campaign>
 ```
 
 **Read `reference/tooling.md` before interpreting the output.** It carries the
@@ -428,7 +428,7 @@ three-act arc, which would overwrite or fight everything `world` and `party`
 produced.
 
 ```bash
-python3 ${CLAUDE_SKILL_DIR}/scripts/omega_paths.py roots   # for templates_dir
+python ${CLAUDE_SKILL_DIR}/scripts/omega_paths.py roots   # for templates_dir
 ```
 
 Copy `state.md`, `world.md`, `npcs.md`, `session-log.md` from **the dnd skill's**
@@ -518,7 +518,7 @@ it — adopt, revert, or extend once with a stated reason. Record the outcome
 against the dispute it came from:
 
 ```bash
-python3 ${CLAUDE_SKILL_DIR}/scripts/omega_state.py resolve <campaign> <n> "<outcome>"
+python ${CLAUDE_SKILL_DIR}/scripts/omega_state.py resolve <campaign> <n> "<outcome>"
 ```
 
 Dispute numbers come from `dump <campaign>` with no `--stage`, which prints the

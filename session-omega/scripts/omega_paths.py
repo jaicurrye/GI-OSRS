@@ -51,6 +51,8 @@ SKILL_CANDIDATES = [
     "~/.claude/plugins/*/skills/dnd",
     "~/.claude/plugins/repos/*/*/skills/dnd",
     "~/.claude/skills/synced/*/skills/dnd",
+    "~/.claude/plugins/cache/*/*/*/skills/dnd",
+    "~/.claude/plugins/marketplaces/*/skills/dnd",
 ]
 
 # Directory copies made by the graph-init and ruleset-migration flows. Not
@@ -94,7 +96,7 @@ def dnd_skill_root():
         base = pathlib.Path(pattern).expanduser()
         if "*" in str(base):
             root = pathlib.Path(str(base).split("*")[0]).expanduser()
-            rel = str(base)[len(str(root)):].lstrip("/")
+            rel = str(base)[len(str(root)):].lstrip("/\\")
             if not root.exists():
                 continue
             matches = sorted(root.glob(rel))

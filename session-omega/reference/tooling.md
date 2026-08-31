@@ -136,7 +136,7 @@ path permanently.
 ## Extension points worth checking
 
 - **Autosave Stop hook** — do not ask; check.
-  `python3 <dnd-skill>/scripts/install_autosave_hook.py --status` answers it
+  `python <dnd-skill>/scripts/install_autosave_hook.py --status` answers it
   deterministically. If `review` reported dropped details or continuity loss and
   the hook was never installed, that is a fix costing no contract line.
 - **Display companion** — usage is **not detectable from disk**: `paths.py`
